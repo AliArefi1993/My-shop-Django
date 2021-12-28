@@ -1,20 +1,26 @@
 from django import forms
+from django.db.models import fields
 from .models import Tag, Category, Post, Comment
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.mail import send_mail, BadHeaderError
+
+# from users.models import CustomUser
+
+# User = CustomUser
 
 
 class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-        ]
+        fields = '__all__'
+        # fields = [
+        #     'username',
+        #     'first_name',
+        #     'last_name',
+        #     'email',
+        # ]
 
 
 class SignUpForm(UserCreationForm):
@@ -26,15 +32,16 @@ class SignUpForm(UserCreationForm):
         max_length=254, help_text='Enter a valid email address')
 
     class Meta:
+        fields = '__all__'
         model = User
-        fields = [
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'password1',
-            'password2',
-        ]
+        # fields = [
+        #     'username',
+        #     'first_name',
+        #     'last_name',
+        #     'email',
+        #     'password1',
+        #     'password2',
+        # ]
 
 
 class SimpleModelForm(forms.ModelForm):
