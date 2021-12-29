@@ -37,3 +37,37 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'{self.order.customer.customer_username} : {self.product} '
+
+
+class EmailCustomer(models.Model):
+    order = models.ForeignKey(Order, on_delete=CASCADE)
+    FAILED = 'FAIL'
+    INPROGRESS = 'PROG'
+    SUCCESS = 'SUCC'
+    STATUS = [
+        (SUCCESS, 'Succesful'),
+        (INPROGRESS, 'InProgress'),
+        (FAILED, 'Failed'),
+    ]
+    status = models.CharField(
+        max_length=4,
+        choices=STATUS,
+        default=INPROGRESS,
+    )
+
+
+class EmailSupplier(models.Model):
+    order_item = models.ForeignKey(OrderItem, on_delete=CASCADE)
+    FAILED = 'FAIL'
+    INPROGRESS = 'PROG'
+    SUCCESS = 'SUCC'
+    STATUS = [
+        (SUCCESS, 'Succesful'),
+        (INPROGRESS, 'InProgress'),
+        (FAILED, 'Failed'),
+    ]
+    status = models.CharField(
+        max_length=4,
+        choices=STATUS,
+        default=INPROGRESS,
+    )

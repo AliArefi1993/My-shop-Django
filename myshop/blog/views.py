@@ -12,20 +12,20 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import User
 from django.db.models.query_utils import Q
 from django.core.exceptions import PermissionDenied
+from users.models import CustomUser
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
     """" user can edit its information here."""
-    model = User
+    model = CustomUser
     form_class = ProfileForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('dashboard')
     template_name = 'blog/profile.html'
 
     def dispatch(self, request, *args, **kwargs):
-        """ Making sure that only user can update its pprofile """
+        """ Making sure that only user can update its profile """
         obj = self.get_object()
         if obj != self.request.user:
             raise PermissionDenied

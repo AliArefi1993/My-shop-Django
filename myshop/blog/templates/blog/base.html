@@ -66,7 +66,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
 
-            {% if  user.username %}
+            {% if  user.phone %}
               <a class="nav-link active" href="{% url 'post_create'%}">New Post</a>
               <a class="nav-link active" href="{% url 'logout'%}">Logout</a>
               <a class="nav-link active" href="{% url 'profile' pk=user.id%}">My Profile</a>

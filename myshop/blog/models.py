@@ -5,10 +5,10 @@ from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template.defaultfilters import slugify
 from django.template.defaultfilters import slugify
 import random
-# from users.models import CustomUser
+from users.models import CustomUser
 
-# User = CustomUser
-User = get_user_model()
+User = CustomUser
+# User = get_user_model()
 
 
 class Tag(models.Model):
