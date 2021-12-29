@@ -1,0 +1,18 @@
+  {% extends "blog/base.html" %}
+{% block content %}
+  <div class="container">
+  <h1 class = "text-center pt-3">Welcome to Ali's Blog</h1>
+  <br/>
+  <br/>
+  <h2>Related Posts</h2>
+  <hr />
+  {% for post in posts %}
+  <a href="{% url 'postdetail' post.slug %}"> <h3>{{ post.title }}</h3></a>
+  {{post.pub_date_pretty}}
+  <br />
+  <img class="img-fluid" src="{{ blog.image.url }}" height=200 width=200/>
+  <br/>
+
+  {% endfor %}
+  </div>
+{% endblock content %}

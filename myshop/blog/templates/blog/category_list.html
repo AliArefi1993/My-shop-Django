@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% block content %}
+<main>
+  <div class="container">
+  <br/>
+  <br/>
+  <h2>Categories</h2>
+  <hr />
+  {% for category in object_list %}
+  <h3 class=>{{ category.name }}</h3><a class= "mx-2" href="{% url 'category_post' id=category.id  %}">see posts </a>
+  {% if  user.is_staff%}
+  <a href="{% url 'category_edit' pk=category.id %}" class="btn btn-warning btn-sm mx-1" >Edit</a>
+  <a href="{% url 'category_delete' pk=category.id %}" class="btn btn-danger btn-sm mx-1" >Delete</a>
+  {% endif %}
+  <br />
+  <br/>
+
+  {% endfor %}
+  </div>
+  <a href="{% url 'category_create' %}" class="btn btn-primary btn-sm mx-1" >Add New Category</a>
+
+</main>
+{% endblock content %}
+

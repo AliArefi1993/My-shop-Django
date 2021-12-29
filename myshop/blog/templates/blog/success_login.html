@@ -1,0 +1,24 @@
+ {% extends "blog/base.html" %}
+{% block content %}
+
+<div class="container">
+
+{% if messages %}
+{% comment %} <ul class="messages"> {% endcomment %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }} {{message.extra_tags}}</div>
+    {% endfor %}
+{% comment %} </ul> {% endcomment %}
+{% endif %}
+
+    {% comment %} <div class="col-md-12 my-3">
+        <form action="" method="post">
+        {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="OK">
+        </form>
+    </div>
+
+</div>  {% endcomment %}
+
+{% endblock content %}

@@ -1,0 +1,24 @@
+{% extends "blog/base.html" %}
+{% block content %}  
+
+  <div class="container">
+  <h1 class = "text-center pt-3">Welcome to Ali's Blog</h1>
+  <br/>
+  <br/>
+  <h2>Tag</h2>
+  <hr />
+  {% for tag in object_list %}
+  <h3>{{ tag.name }}</h3><a href="{% url 'tag_post' id=tag.id  %}">see posts </a>
+  {% if  user.is_staff%}
+    <a href="{% url 'tag_edit' pk=tag.id %}" class="btn btn-warning btn-sm mx-1" >Edit</a>
+  <a href="{% url 'tag_delete' pk=tag.id %}" class="btn btn-danger btn-sm mx-1" >Delete</a>
+    {% endif %}
+
+  <br />
+  <br/>
+
+  {% endfor %}
+  </div>
+  <a href="{% url 'tag_create' %}" class="btn btn-primary btn-sm mx-1" >Add New Tag</a>
+
+{% endblock content %}
