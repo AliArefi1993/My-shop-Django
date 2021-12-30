@@ -1,0 +1,12 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+    <h2>Create Tag </h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">OK</button>
+        <br><br>
+        <a href="{% url 'dashboard' %}">Home</a>
+    </form>
+{% endblock content %}
