@@ -17,6 +17,15 @@ class Customer(models.Model):
         return self.customer_username
 
 
+class AvailableSupplierManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(status='DELE')
+
+
+class SupplierManager(models.Manager):
+    pass
+
+
 class Supplier(models.Model):
     supplier_name = models.CharField(max_length=100, unique=True)
     description = models.CharField(max_length=1000, blank=True, null=True)
@@ -43,6 +52,8 @@ class Supplier(models.Model):
         choices=STATUS,
         default=PENDING,
     )
+    objects = SupplierManager()
+    available = AvailableSupplierManager()
 
     def save(self, *args, **kwargs):
 
@@ -80,6 +91,15 @@ class Product(models.Model):
     tag = models.ForeignKey(
         'Tag', on_delete=models.DO_NOTHING, blank=True, null=True)
     image = models.ImageField(upload_to='images/')
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
+    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        return super().save(*args, **kwargs)

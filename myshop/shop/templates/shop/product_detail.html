@@ -3,7 +3,7 @@
 {% load static %}
 <title>Dashboard</title>
     <div class="container">
-        <h1 class = "text-center pt-3">{{ supplier.supplier_name }} (status:{{ supplier.status}})</h1>
+        <h1 class = "text-center pt-3">{{ product.name }} (is available:{{ product.is_available}})</h1>
         <br/>
 
 
@@ -12,9 +12,9 @@
 
             <!-- Card Body -->
             <div class="card-body">
-        <p><img class="img-fluid " src= {{ supplier.image.url }} height=200 width=300/></p>
-                {{ supplier.description }}
-        <div>created at : {{supplier.created_date|date:"Y-m-d" }}</div>
+        <p><img class="img-fluid " src= {{ product.image.url }} height=200 width=300/></p>
+                {{ product.description }}
+        <div>created at : {{product.created_date|date:"Y-m-d" }}</div>
             </div>
         </div>
 
@@ -41,25 +41,25 @@
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Country</th>
-                                            <th>state</th>
-                                            <th>city</th>
-                                            <th>address</th>
-                                            <th>post_code</th>
+                                            <th>quantity</th>
+                                            <th>supplier</th>
+                                            <th>unit_price</th>
+                                            <th>is_discontinued</th>
+                                            <th>is_available</th>
                                             <th>slug</th>
-                                            <th>type</th>
+                                            <th>tag</th>
                                         </tr>
                                     </thead>
                                     </tfoot>
                                     <tbody>
                                         <tr>
-                                            <td>{{supplier.country}}</td>
-                                            <td>{{supplier.state}}</td>
-                                            <td>{{supplier.city}}</td>
-                                            <td>{{supplier.address}}</td>
-                                            <td>{{supplier.post_code}}</td>
-                                            <td>{{supplier.slug}}</td>
-                                            <td>{{supplier.type}}</td>
+                                            <td>{{product.quantity}}</td>
+                                            <td>{{product.supplier}}</td>
+                                            <td>{{product.unit_price}}</td>
+                                            <td>{{product.is_discontinued}}</td>
+                                            <td>{{product.is_available}}</td>
+                                            <td>{{product.slug}}</td>
+                                            <td>{{product.tag}}</td>
                                         </tr>
                                         
                                     </tbody>
@@ -78,13 +78,13 @@
                             <span class="text">DELET</span>
                         </a>
 
-                        <a href="{% url 'shop:supplier_edit' supplier.slug %}" class="btn btn-info btn-icon-split">
+                        {% comment %} <a href="{% url 'shop:supplier_edit' supplier.slug %}" class="btn btn-info btn-icon-split"> {% endcomment %}
                             <span class="icon text-white-50">
                                 <i class="fas fa-info-circle"></i>
                             </span>
                             <span class="text">EDIT</span>
                         </a>
-                        <a href="{% url 'shop:supplier_products' supplier.slug %}" class="btn btn-info btn-icon-split">
+                        {% comment %} <a href="{% url 'shop:supplier_products' supplier.slug %}" class="btn btn-info btn-icon-split"> {% endcomment %}
                             <span class="icon text-white-50">
                                 <i class="fas fa-info-circle"></i>
                             </span>
@@ -116,7 +116,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <form method="post">{% csrf_token %}
-                <input class="btn btn-danger btn-ok" type="submit" value="Delete" name = "hi">
+                <input class="btn btn-danger btn-ok" type="submit" value="Delete" >
                 </form>
 
             </div>
