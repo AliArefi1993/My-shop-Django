@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db.models.deletion import CASCADE, DO_NOTHING, PROTECT
 from django.db.models.fields import BLANK_CHOICE_DASH
 from django.template.defaultfilters import slugify
-from django.template.defaultfilters import slugify
 import random
 from users.models import CustomUser
 

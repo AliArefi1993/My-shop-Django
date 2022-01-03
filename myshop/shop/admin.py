@@ -52,7 +52,7 @@ def make_confirmed(ModelAdmin, request, queryset):
 @admin.register(Supplier)
 class SupplierAdmin(admin.ModelAdmin):
     list_display = ('custom_user', 'supplier_name', 'type', 'status',
-                    'country', 'state', 'city', 'address', 'post_code')
+                    'country', 'state', 'city', 'address', 'post_code', 'created_date', 'image',)
     list_filter = ("country", 'state', 'city', 'type')
     search_fields = ('custom_user', 'customer_username',)
     list_editable = ('status',)

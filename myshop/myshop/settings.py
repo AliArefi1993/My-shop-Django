@@ -138,8 +138,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'satatic'),
+    os.path.join(BASE_DIR, 'static'),
 )
+print(STATICFILES_DIRS, "----------------<")
+
+# STATICFILES_DIRS = [
+#     BASE_DIR / 'static'
+# ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'medai')
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -147,3 +152,4 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 AUTH_USER_MODEL = 'users.CustomUser'
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+print(STATIC_ROOT, 'this')

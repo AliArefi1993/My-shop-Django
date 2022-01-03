@@ -1,0 +1,92 @@
+{% extends "shop/base.html" %}
+{% block content %}
+{% load static %}
+<title>Dashboard</title>
+    <div class="container">
+        <h1 class = "text-center pt-3">{{ supplier.supplier_name }} (status:{{ supplier.status}})</h1>
+        <br/>
+
+
+        <!-- Dropdown Card Example -->
+        <div class="card shadow mb-4">
+
+            <!-- Card Body -->
+            <div class="card-body">
+        <p><img class="img-fluid " src= {{ supplier.image.url }} height=200 width=300/></p>
+                {{ supplier.description }}
+        <div>created at : {{supplier.created_date}}</div>
+            </div>
+        </div>
+
+        <br/>
+
+    {% comment %} </div> {% endcomment %}
+
+
+    <!-- Begin Page Content -->
+                {% comment %} <div class="container-fluid"> {% endcomment %}
+
+                    <!-- Page Heading -->
+                    <h1 class="h3 mb-2 text-gray-800"> More Detail</h1>
+                    <p class="mb-4"></p>
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary"></h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Country</th>
+                                            <th>state</th>
+                                            <th>city</th>
+                                            <th>address</th>
+                                            <th>post_code</th>
+                                            <th>slug</th>
+                                            <th>type</th>
+                                        </tr>
+                                    </thead>
+                                    </tfoot>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{supplier.country}}</td>
+                                            <td>{{supplier.state}}</td>
+                                            <td>{{supplier.city}}</td>
+                                            <td>{{supplier.address}}</td>
+                                            <td>{{supplier.post_code}}</td>
+                                            <td>{{supplier.slug}}</td>
+                                            <td>{{supplier.type}}</td>
+                                        </tr>
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="my-2 ">
+                        <a href="#" class="btn btn-danger btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-trash"></i>
+                            </span>
+                            <span class="text">DELET</span>
+                        </a>
+
+                        <a href="{% url 'shop:supplier_edit' supplier.slug %}" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-info-circle"></i>
+                            </span>
+                            <span class="text">EDIT</span>
+                        </a>
+                    </div>
+                    <br/>
+
+                </div>
+                <!-- /.container-fluid -->
+
+               
+{% endblock content %}

@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser
+from django.template.defaultfilters import slugify
 
 
 class Customer(models.Model):
@@ -17,13 +18,17 @@ class Customer(models.Model):
 
 
 class Supplier(models.Model):
-    supplier_name = models.CharField(max_length=100)
+    supplier_name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
     country = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
     post_code = models.CharField(max_length=10)
     custom_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     type = models.ForeignKey('Type', on_delete=models.CASCADE)
     DELETED = 'DELE'
     PENDING = 'PEND'
@@ -38,6 +43,13 @@ class Supplier(models.Model):
         choices=STATUS,
         default=PENDING,
     )
+
+    def save(self, *args, **kwargs):
+
+        if not self.slug:
+            self.slug = slugify(self.supplier_name)
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.supplier_name
