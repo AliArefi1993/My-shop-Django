@@ -1,17 +1,17 @@
 {% extends "shop/base.html" %}
 {% block content %}
 {% load static %}
-<title>Create Supplier</title>
+<title>Edit {{product.name}}</title>
     
 
 
     <!-- Begin Page Content -->
                 {% comment %} <div class="container-fluid"> {% endcomment %}
-<h2>Create New Supplier</h2>
+<h2>Edit {{product.name}} </h2>
     <form method="post" enctype='multipart/form-data'>
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Add</button>
+        <button type="submit">Update</button>
         <br><br>
         <a href="{% url 'shop:dashboard' %}">Back</a>
     </form>

@@ -1,4 +1,5 @@
 from django import forms
+from shop.models import Product
 
 from shop.models import Supplier
 
@@ -14,3 +15,11 @@ class SupplierForm(forms.ModelForm):
         model = Supplier
         fields = ['supplier_name', 'description', 'image',
                   'country', 'state', 'city', 'address', 'post_code', 'type']
+
+
+class ProductForm(forms.ModelForm):
+
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image',
+                  'quantity', 'unit_price', 'is_discontinued', 'is_available', 'tag']

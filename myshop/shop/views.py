@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls.base import reverse
 from users.models import CustomUser
-from shop.forms import LoginForm, SupplierForm
+from shop.forms import LoginForm, SupplierForm, ProductForm
 from shop.models import Supplier, Product
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -157,7 +157,9 @@ class SupplierProductView(LoginRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
-        return self.model.objects.filter(supplier__slug=self.supplier_slug)
+        self.queryset = self.model.objects.filter(
+            supplier__slug=self.supplier_slug)
+        return super().get_queryset(*args, **kwargs)
 
 
 class ProductDetailView(LoginRequiredMixin, DetailView):
@@ -171,7 +173,6 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         """ Making sure that only authors can update stories """
-        print(9999329489238492)
         obj = self.get_object()
         if obj.supplier.custom_user != self.request.user:
             raise PermissionDenied
@@ -180,3 +181,40 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     # def slug_url_kwarg(self):
     #     """Get the name of a slug in url ."""
     #     return 'product_slug'
+
+
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """This class view is for creating a Product in a specified Supplier """
+    login_url = 'login'
+    form_class = ProductForm
+    template_name = 'shop/product_create.html'
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.supplier = Supplier.objects.get(slug=self.kwargs['slug'])
+        return super(ProductCreateView, self).form_valid(form)
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy(
+            'shop:supplier_products', kwargs=self.kwargs)
+        return super().get_success_url()
+
+
+class ProductEditView(LoginRequiredMixin, UpdateView):
+    """ This class view is for editing a Product """
+    login_url = 'login'
+    model = Product
+    form_class = ProductForm
+    slug_url_kwarg = 'product_slug'
+
+    def get_success_url(self):
+        self.success_url = reverse_lazy(
+            'shop:product_detail', kwargs=self.kwargs)
+        return super().get_success_url()
+
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only it's  own user can update this product """
+        obj = self.get_object()
+        if obj.supplier.custom_user != self.request.user:
+            raise PermissionDenied
+        return super(ProductEditView, self).dispatch(request, *args, **kwargs)
