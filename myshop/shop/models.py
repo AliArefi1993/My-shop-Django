@@ -22,6 +22,11 @@ class AvailableSupplierManager(models.Manager):
         return super().get_queryset().exclude(status='DELE')
 
 
+class NotAvailableSupplierManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='PEND')
+
+
 class SupplierManager(models.Manager):
     pass
 
@@ -54,6 +59,7 @@ class Supplier(models.Model):
     )
     objects = SupplierManager()
     available = AvailableSupplierManager()
+    not_available = NotAvailableSupplierManager()
 
     def save(self, *args, **kwargs):
 

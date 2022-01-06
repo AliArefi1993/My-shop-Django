@@ -1,7 +1,8 @@
+from django.db.models.query_utils import Q
 from django.shortcuts import render
 from django.urls.base import reverse
 from users.models import CustomUser
-from shop.forms import LoginForm, SupplierForm, ProductForm
+from shop.forms import LoginForm, SupplierForm, ProductForm, SignUpForm, ProfileForm
 from shop.models import Supplier, Product
 from order.models import OrderItem
 from django.views import View
@@ -15,6 +16,29 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
+
+
+class SignUpView(CreateView):
+    """" new user can sign up here."""
+    form_class = SignUpForm
+    success_url = reverse_lazy('shop:login')
+    template_name = 'shop/register.html'
+
+
+class ProfileView(LoginRequiredMixin, UpdateView):
+    """" user can edit its information here."""
+    login_url = 'shop:login'
+    model = CustomUser
+    form_class = ProfileForm
+    success_url = reverse_lazy('shop:dashboard')
+    template_name = 'shop/profile.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only user can update its profile """
+        obj = self.get_object()
+        if obj != self.request.user:
+            raise PermissionDenied
+        return super(ProfileView, self).dispatch(request, *args, **kwargs)
 
 
 class Login(View):
@@ -34,7 +58,7 @@ class Login(View):
                 next = request.GET.get('next')
                 if next:
                     return redirect(request.GET.get('next'))
-                return HttpResponseRedirect('/shop/base')
+                return HttpResponseRedirect('/shop/dashboard')
 
             return HttpResponseRedirect('/shop/login')
 
@@ -42,17 +66,19 @@ class Login(View):
         return render(request, 'shop/login.html', {'form': self.form})
 
 
-class Base(View):
-    """This view is for Base"""
-    form = LoginForm()
+class LogoutView(View):
+    """This view is for logging out"""
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'shop/base.html', {'form': self.form})
+        logout(request)
+        messages.add_message(
+            request, messages.SUCCESS, 'User Logged out.')
+        return redirect('shop:login')
 
 
 class DashboardView(LoginRequiredMixin, ListView):
     """This view is for showing user's shops"""
-    login_url = 'login'
+    login_url = 'shop:login'
     model = Supplier
     template_name = 'shop/index.html'
 
@@ -62,19 +88,30 @@ class DashboardView(LoginRequiredMixin, ListView):
 
 class SupplierCreateView(LoginRequiredMixin, CreateView):
     """This class view is for creating a post after user has been logged in """
-    login_url = 'login'
+    login_url = 'shop:login'
     form_class = SupplierForm
     success_url = reverse_lazy('shop:dashboard')
     template_name = 'shop/supplier_create.html'
+    model = Supplier
 
     def form_valid(self, form):
         obj = form.save(commit=False)
         obj.custom_user = self.request.user
         return super(SupplierCreateView, self).form_valid(form)
 
+    def get(self, request, *args, **kwargs):
+        if self.model.not_available.filter(custom_user=self.request.user):
+            print(self.model.not_available.filter(
+                custom_user=self.request.user))
+            messages.add_message(
+                request, messages.WARNING, "You can't create new supplier, beacause you have at least one supplier with the pending status.")
+            return HttpResponseRedirect('/shop/dashboard')
+        return super().get(request, *args, **kwargs)
+
 
 class SupplierDetailView(LoginRequiredMixin, DetailView):
     """This view is for showing supplier detail to its owner"""
+    login_url = 'shop:login'
     model = Supplier
     login_url = 'login'
 
@@ -83,16 +120,8 @@ class SupplierDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # form = CommentForm()
         context['order_item_list'] = OrderItem.objects.filter(
             product__supplier=context['supplier']).order_by('-order__order_date')
-# Order.objects.filter(orderitem__product__shop__slug=self.kwargs['slug'])
-        # orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status ="", createdAt__range=[fromdate ,todate]).values(
-        #     'id','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('createdAt')
-        # context['tag_list'] = Tag.objects.filter(post=context['post'])
-        # context['form'] = form
-        # if self.request.user != 'AnonymousUser':
-        #     context['user'] = self.request.user
         return context
 
     def dispatch(self, request, *args, **kwargs):
@@ -125,6 +154,7 @@ class SupplierEditView(LoginRequiredMixin, UpdateView):
 
 class DeleteSupplier(LoginRequiredMixin, View):
     """This view is for delte a supplier"""
+    login_url = 'shop:login'
     template_name = 'shop/supplier_detail.html'
     model = Supplier
     form_class = SupplierForm
@@ -135,8 +165,9 @@ class DeleteSupplier(LoginRequiredMixin, View):
         return redirect(reverse('shop:dashboard'))
 
 
-class SupplierView(View):
-    """This class view is for creating and showing comments """
+class SupplierView(LoginRequiredMixin, View):
+    """This class view is for supplier """
+    login_url = 'shop:login'
 
     def get(self, request, *args, **kwargs):
         view = SupplierDetailView.as_view()
@@ -149,7 +180,7 @@ class SupplierView(View):
 
 class SupplierProductView(LoginRequiredMixin, ListView):
     """This view is for showing supplier's product"""
-    login_url = 'login'
+    login_url = 'shop:login'
     model = Product
     # template_name = 'shop/index.html'
 
@@ -166,7 +197,7 @@ class SupplierProductView(LoginRequiredMixin, ListView):
 class ProductDetailView(LoginRequiredMixin, DetailView):
     """This view is for showing supplier detail to its owner"""
     model = Product
-    login_url = 'login'
+    login_url = 'shop:login'
     slug_url_kwarg = 'product_slug'
 
     def dispatch(self, request, *args, **kwargs):
@@ -179,7 +210,7 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     """This class view is for creating a Product in a specified Supplier """
-    login_url = 'login'
+    login_url = 'shop:login'
     form_class = ProductForm
     template_name = 'shop/product_create.html'
 
@@ -196,7 +227,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
 class ProductEditView(LoginRequiredMixin, UpdateView):
     """ This class view is for editing a Product """
-    login_url = 'login'
+    login_url = 'shop:login'
     model = Product
     form_class = ProductForm
     slug_url_kwarg = 'product_slug'
@@ -212,3 +243,17 @@ class ProductEditView(LoginRequiredMixin, UpdateView):
         if obj.supplier.custom_user != self.request.user:
             raise PermissionDenied
         return super(ProductEditView, self).dispatch(request, *args, **kwargs)
+
+
+class SearchView(LoginRequiredMixin, ListView):
+    """This class view is for searching in suppliers' name and description"""
+    login_url = 'shop:login'
+    model = Supplier
+    template_name = 'shop/index.html'
+
+    def get_queryset(self, *args, **kwargs):
+        search_query = self.request.GET.get('search_box', None)
+        print(search_query, "*************************____")
+        suppliers = Supplier.objects.filter(Q(supplier_name__icontains=search_query) | Q(
+            description__icontains=search_query)).filter(custom_user=self.request.user)
+        return suppliers
