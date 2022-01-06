@@ -17,7 +17,7 @@ class Order(models.Model):
     STATUS = [
         (PAID, 'Paid'),
         (PENDING, 'pending'),
-        (CANCELED, 'Canceled'),
+        (CANCELED, 'canceled'),
     ]
     status = models.CharField(
         max_length=4,
@@ -34,6 +34,23 @@ class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=CASCADE)
     quantity = models.IntegerField(default=0)
     price = models.IntegerField(blank=True, null=True)
+
+    CANCELED = 'CANC'
+    PENDING = 'PEND'
+    APPROVED = 'APPR'
+    PAID = 'PAID'
+    STATUS = [
+        (PAID, 'Paid'),
+        (PENDING, 'pending'),
+        (APPROVED, 'approved'),
+        (CANCELED, 'canceled'),
+    ]
+    status = models.CharField(
+        max_length=4,
+        choices=STATUS,
+        default=PENDING, null=True, blank=True
+
+    )
 
     def __str__(self):
         return f'{self.order.customer.customer_username} : {self.product} '

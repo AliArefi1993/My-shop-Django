@@ -1,0 +1,123 @@
+{% extends "shop/base.html" %}
+{% block content %}
+{% load static %}
+<title>Order Item : {{orderitem.order.order_number}}</title>
+
+<div class="container">
+
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"> Order Number : {{orderitem.order.order_number}}</h1>
+    <p class="mb-4"></p>
+
+ <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"></h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>supplier</th>
+                            <th>product</th>
+                            <th>status</th>
+                            <th>quantity</th>
+                            <th>price</th>
+                            <th>customer</th>
+                            <th>date</th>
+                        </tr>
+                    </thead>
+                    </tfoot>
+                    <tbody>
+                        <form method="post"  action="{% url 'order:update_order_status' orderitem.pk%}">{% csrf_token %}
+                            <tr>
+                                <td>{{orderitem.product.supplier}}</td>
+                                <td>{{orderitem.product}}</td>
+                                <td>
+                                    <select name="status" id="id_status" {% if orderitem.status == 'PAID' %} disabled {% endif %}>
+                                        <option value="CANC" {% if orderitem.status == 'CANC' %} selected="" {% endif %}>Canceled</option>
+                                        <option value="APPR" {% if orderitem.status == 'APPR' %} selected="" {% endif %}>approved</option>
+                                        <option value="PEND" {% if orderitem.status == 'PEND' %} selected="" {% endif %}>pending</option>
+                                        <option value="PAID" {% if orderitem.status == 'PAID' %} selected="" {% endif %} disabled>Paid</option>
+                                        <option value="" {% if  not orderitem.status %} selected ="" {% endif %}disabled>---------</option>
+                                    </select>
+                            <input  hidden value={{orderitem.product.supplier.slug}} name = "slug">
+                            <input class="btn btn-success btn-icon-split" type="submit" value= 'Save' >
+                                    </td>
+                                <td>{{orderitem.quantity}}</td>
+                                <td>{{orderitem.price}}</td>
+                                <td>{{orderitem.order.customer}}</td>
+                                <td>{{orderitem.order.order_date}}</td>
+
+                            </tr>
+                            <input  hidden value={{orderitem.pk}} name = "order_id">
+                        </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h1 class = "text-center pt-3">Product Details</h1>
+
+    <br/>
+
+
+    <!-- Dropdown Card Example -->
+    <div class="card shadow mb-4">
+
+    <h1 class = "text-center pt-3">{{ orderitem.product.name }} (is available:{{ orderitem.product.is_available}})</h1>
+        <!-- Card Body -->
+        <div class="card-body">
+            <p><img class="img-fluid " src= {{ orderitem.product.image.url }} height=200 width=300/></p>
+                    {{ orderitem.product.description }}
+            <div>created at : {{orderitem.product.created_date|date:"Y-m-d" }}</div>
+        </div>
+    </div>
+
+    <h1 class="h3 mb-2 text-gray-800"> More Details</h1>
+    <p class="mb-4"></p>
+
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary"></h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr>
+                                <th>quantity</th>
+                                <th>supplier</th>
+                                <th>unit_price</th>
+                                <th>is_discontinued</th>
+                                <th>is_available</th>
+                                <th>slug</th>
+                                <th>tag</th>
+                            </tr>
+                        </thead>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>{{orderitem.product.quantity}}</td>
+                                <td>{{orderitem.product.supplier}}</td>
+                                <td>{{orderitem.product.unit_price}}</td>
+                                <td>{{orderitem.product.is_discontinued}}</td>
+                                <td>{{orderitem.product.is_available}}</td>
+                                <td>{{orderitem.product.slug}}</td>
+                                <td>{{orderitem.product.tag}}</td>
+                            </tr>
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+{% endblock content %}

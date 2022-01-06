@@ -3,6 +3,7 @@ from django.urls.base import reverse
 from users.models import CustomUser
 from shop.forms import LoginForm, SupplierForm, ProductForm
 from shop.models import Supplier, Product
+from order.models import OrderItem
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -14,8 +15,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
-
-# Create your views here.
 
 
 class Login(View):
@@ -81,15 +80,20 @@ class SupplierDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self, *args, **kwargs):
         return self.model.available.filter(custom_user=self.request.user)
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     form = CommentForm()
-    #     context['comment_list'] = Comment.objects.filter(post=context['post'])
-    #     context['tag_list'] = Tag.objects.filter(post=context['post'])
-    #     context['form'] = form
-    #     if self.request.user != 'AnonymousUser':
-    #         context['user'] = self.request.user
-    #     return context
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # form = CommentForm()
+        context['order_item_list'] = OrderItem.objects.filter(
+            product__supplier=context['supplier']).order_by('-order__order_date')
+# Order.objects.filter(orderitem__product__shop__slug=self.kwargs['slug'])
+        # orderlist = Order.objects.filter(order_of_orderitem__product__shop__author=request.user.id ,status ="", createdAt__range=[fromdate ,todate]).values(
+        #     'id','order_of_orderitem__product__shop__name', 'status', 'customer__username').order_by('createdAt')
+        # context['tag_list'] = Tag.objects.filter(post=context['post'])
+        # context['form'] = form
+        # if self.request.user != 'AnonymousUser':
+        #     context['user'] = self.request.user
+        return context
 
     def dispatch(self, request, *args, **kwargs):
         """ Making sure that only authors can update stories """
@@ -126,9 +130,6 @@ class DeleteSupplier(LoginRequiredMixin, View):
     form_class = SupplierForm
 
     def post(self, request, *args, **kwargs):
-        print(args)
-        print(kwargs)
-        print(request)
         slug = kwargs['slug']
         self.model.objects.filter(slug=slug).update(status='DELE')
         return redirect(reverse('shop:dashboard'))
@@ -168,19 +169,12 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
     login_url = 'login'
     slug_url_kwarg = 'product_slug'
 
-    # def get_queryset(self, *args, **kwargs):
-    #     return self.model.available.filter(custom_user=self.request.user)
-
     def dispatch(self, request, *args, **kwargs):
         """ Making sure that only authors can update stories """
         obj = self.get_object()
         if obj.supplier.custom_user != self.request.user:
             raise PermissionDenied
         return super(ProductDetailView, self).dispatch(request, *args, **kwargs)
-
-    # def slug_url_kwarg(self):
-    #     """Get the name of a slug in url ."""
-    #     return 'product_slug'
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
