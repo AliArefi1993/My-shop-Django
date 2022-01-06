@@ -1,0 +1,102 @@
+{% extends "shop/base.html" %}
+{% block content %}
+{% load static %}
+<title>Product Detail</title>
+<div class="container">
+    <h1 class = "text-center pt-3">{{ product.name }} (is available:{{ product.is_available}})</h1>
+    <br/>
+
+
+    <!-- Dropdown Card Example -->
+    <div class="card shadow mb-4">
+
+        <!-- Card Body -->
+        <div class="card-body">
+            <p><img class="img-fluid " src= {{ product.image.url }} height=200 width=300/></p>
+                    {{ product.description }}
+            <div>created at : {{product.created_date|date:"Y-m-d" }}</div>
+        </div>
+    </div>
+
+    <br/>
+        
+
+    {% comment %} </div> {% endcomment %}
+
+
+    <!-- Begin Page Content -->
+                {% comment %} <div class="container-fluid"> {% endcomment %}
+
+                    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800"> More Detail</h1>
+    <p class="mb-4"></p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"></h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>quantity</th>
+                            <th>supplier</th>
+                            <th>unit_price</th>
+                            <th>is_discontinued</th>
+                            <th>is_available</th>
+                            <th>slug</th>
+                            <th>tag</th>
+                        </tr>
+                    </thead>
+                    </tfoot>
+                    <tbody>
+                        <tr>
+                            <td>{{product.quantity}}</td>
+                            <td><a href="{% url 'shop:detail' product.supplier.slug%}" >{{product.supplier}} </a></td>
+                            <td>{{product.unit_price}}</td>
+                            <td>{{product.is_discontinued}}</td>
+                            <td>{{product.is_available}}</td>
+                            <td>{{product.slug}}</td>
+                            <td>{{product.tag}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="my-2 ">
+        {% comment %} <a href="#" class="btn btn-danger btn-icon-split"
+        data-toggle="modal" data-target="#confirm-delete">
+            <span class="icon text-white-50">
+                <i class="fas fa-trash"></i>
+            </span>
+            <span class="text">DELET</span>
+        </a> {% endcomment %}
+
+        <a href="{% url 'shop:product_edit' product.supplier.slug product.slug %}" class="btn btn-info btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-edit"></i>
+            </span>
+            <span class="text">EDIT</span>
+        </a>
+        {% comment %} <a href="{% url 'shop:supplier_products' supplier.slug %}" class="btn btn-info btn-icon-split"> {% endcomment %}
+            {% comment %} <span class="icon text-white-50">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            <span class="text">SEE PRODUCTS</span> {% endcomment %}
+        </a>
+    </div>
+    <br/>
+
+</div>
+
+<br/><br/>
+<br/><br/>
+<br/><br/>
+
+{% endblock content %}

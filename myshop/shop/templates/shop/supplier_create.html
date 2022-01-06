@@ -1,0 +1,18 @@
+{% extends "shop/base.html" %}
+{% block content %}
+{% load static %}
+<title>Create Supplier</title>
+    
+
+    <!-- Begin Page Content -->
+<h2>Create New Supplier</h2>
+    <form method="post" enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add</button>
+        <br><br>
+        <a href="{% url 'shop:dashboard' %}">Back</a>
+    </form>
+                    <!-- Page Heading -->
+               
+{% endblock content %}

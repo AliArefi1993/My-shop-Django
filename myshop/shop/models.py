@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import CustomUser
-# Create your models here.
+from django.template.defaultfilters import slugify
 
 
 class Customer(models.Model):
@@ -17,14 +17,32 @@ class Customer(models.Model):
         return self.customer_username
 
 
+class AvailableSupplierManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(status='DELE')
+
+
+class NotAvailableSupplierManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status='PEND')
+
+
+class SupplierManager(models.Manager):
+    pass
+
+
 class Supplier(models.Model):
-    supplier_name = models.CharField(max_length=100)
+    supplier_name = models.CharField(max_length=100, unique=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
     country = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
     post_code = models.CharField(max_length=10)
     custom_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     type = models.ForeignKey('Type', on_delete=models.CASCADE)
     DELETED = 'DELE'
     PENDING = 'PEND'
@@ -39,6 +57,16 @@ class Supplier(models.Model):
         choices=STATUS,
         default=PENDING,
     )
+    objects = SupplierManager()
+    available = AvailableSupplierManager()
+    not_available = NotAvailableSupplierManager()
+
+    def save(self, *args, **kwargs):
+
+        if not self.slug:
+            self.slug = slugify(self.supplier_name)
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.supplier_name
@@ -69,6 +97,15 @@ class Product(models.Model):
     tag = models.ForeignKey(
         'Tag', on_delete=models.DO_NOTHING, blank=True, null=True)
     image = models.ImageField(upload_to='images/')
+    slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
+    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+
+        if not self.slug:
+            self.slug = slugify(self.name)
+
+        return super().save(*args, **kwargs)
