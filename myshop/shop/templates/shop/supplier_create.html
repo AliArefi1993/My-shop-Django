@@ -4,9 +4,7 @@
 <title>Create Supplier</title>
     
 
-
     <!-- Begin Page Content -->
-                {% comment %} <div class="container-fluid"> {% endcomment %}
 <h2>Create New Supplier</h2>
     <form method="post" enctype='multipart/form-data'>
         {% csrf_token %}
@@ -16,10 +14,5 @@
         <a href="{% url 'shop:dashboard' %}">Back</a>
     </form>
                     <!-- Page Heading -->
-                   
-
-                    
-                <!-- /.container-fluid -->
-
                
 {% endblock content %}

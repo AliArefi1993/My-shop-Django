@@ -4,6 +4,7 @@ from shop.views import Login, DashboardView, SupplierDetailView, SupplierEditVie
     ProductCreateView, ProductEditView, SignUpView, ProfileView, LogoutView, SearchView
 app_name = 'shop'
 urlpatterns = [
+    path('', DashboardView.as_view(), name='dashboard'),
 
     path('login/', Login.as_view(), name='login'),
     path('sighnup/', SignUpView.as_view(), name='sighnup'),
@@ -27,6 +28,5 @@ urlpatterns = [
     path('supplier/<slug:slug>/product_create/',
          ProductCreateView.as_view(), name='product_create'),
     path('search', SearchView.as_view(), name='search'),
-
 
 ]

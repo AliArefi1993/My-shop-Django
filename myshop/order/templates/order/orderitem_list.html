@@ -5,18 +5,16 @@
 
 <div class="container">
 
-
-
     <!-- Page Heading -->
     <h1 class="h3 mb-2 text-gray-800"> Order Item List</h1>
     <p class="mb-4"></p>
 
-                     <form method="get">
-                            {{ filter.form }}   
-<br/><br/>
+    <form method="get">
+        {{ filter.form }}   
+        <br/><br/>
 
-                            <input type="submit" />
-                        </form>
+        <input type="submit" />
+    </form>
 
  <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -30,7 +28,7 @@
                         <tr>
                         
                             <th>supplier</th>
-                            <th>peoduct</th>
+                            <th>product</th>
                             <th>status</th>
                             <th>quantity</th>
                             <th>price</th>
@@ -39,26 +37,14 @@
                             <th>more details</th>
                         </tr>
                     </thead>
-                     {% comment %} <thead>
-                        <tr>
-                            <th>filter</th>
-                            <th>{{filter.form.product}}</th>
-                            <th>{{filter.form.status}}</th>
-                            <th>{{filter.form.quantity}}</th>
-                            <th>{{filter.form.price}}</th>
-                            <th>{{filter.form.customer}}</th>
-                            <th>{{filter.form.date}}</th>
-                            <th></th>
-                        </tr>
-                    </thead> {% endcomment %}
                     </tfoot>
                     <tbody>
                     {% for order in filter.qs %}
                         <form method="post"  action="{% url 'order:update_order_status' order.pk%}">{% csrf_token %}
                     
                             <tr>
-                                <td>{{order.product.supplier}}</td>
-                                <td>{{order.product}}</td>
+                                <td><a href="{% url 'shop:detail' order.product.supplier.slug %}">{{order.product.supplier}}</a></td>
+                                <td><a href="{% url 'shop:product_detail' order.product.supplier.slug order.product.slug %}">{{order.product.supplier}}{{order.product}}</a></td>
                                 <td>
                                     <select name="status" id="id_status" {% if order.status == 'PAID' %} disabled {% endif %}>
                                         <option value="CANC" {% if order.status == 'CANC' %} selected="" {% endif %}>Canceled</option>
@@ -75,14 +61,11 @@
                                 <td>{{order.order.order_date}}</td>
                                 <td>
                                     <a href="{% url 'order:order_item_detail' order.product.supplier.slug order.pk %}" class="">
-                                        
                                         <span class="text">details</span>
                                      </a>
                                 </td>
                             </tr>
                             <input  hidden value={{order.pk}} name = "order_id">
-
-                        
                         </form>
                     {% endfor %}
                     </tbody>
@@ -91,23 +74,10 @@
         </div>
     </div>
 
-
-
-
 </div>
-                <!-- /.container-fluid -->
-
-
-
-
-
 
 <br/><br/>
 <br/><br/>
 <br/><br/>
-
-
-
-
 
 {% endblock content %}

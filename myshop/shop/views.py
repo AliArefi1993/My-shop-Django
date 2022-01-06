@@ -77,7 +77,7 @@ class LogoutView(View):
 
 
 class DashboardView(LoginRequiredMixin, ListView):
-    """This view is for showing user's shops"""
+    """This view is for showing user's suppliers"""
     login_url = 'shop:login'
     model = Supplier
     template_name = 'shop/index.html'
@@ -87,7 +87,7 @@ class DashboardView(LoginRequiredMixin, ListView):
 
 
 class SupplierCreateView(LoginRequiredMixin, CreateView):
-    """This class view is for creating a post after user has been logged in """
+    """This class view is for creating a supplier after user has been logged in """
     login_url = 'shop:login'
     form_class = SupplierForm
     success_url = reverse_lazy('shop:dashboard')
@@ -133,7 +133,7 @@ class SupplierDetailView(LoginRequiredMixin, DetailView):
 
 
 class SupplierEditView(LoginRequiredMixin, UpdateView):
-    """ This class view is for editing a Post """
+    """ This class view is for editing a supplier details """
     login_url = 'login'
     model = Supplier
     form_class = SupplierForm

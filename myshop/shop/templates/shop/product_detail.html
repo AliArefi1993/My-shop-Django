@@ -54,7 +54,7 @@
                     <tbody>
                         <tr>
                             <td>{{product.quantity}}</td>
-                            <td>{{product.supplier}}</td>
+                            <td><a href="{% url 'shop:detail' product.supplier.slug%}" >{{product.supplier}} </a></td>
                             <td>{{product.unit_price}}</td>
                             <td>{{product.is_discontinued}}</td>
                             <td>{{product.is_available}}</td>
@@ -94,15 +94,9 @@
     <br/>
 
 </div>
-                <!-- /.container-fluid -->
-
 
 <br/><br/>
 <br/><br/>
 <br/><br/>
-
-
-
-
 
 {% endblock content %}

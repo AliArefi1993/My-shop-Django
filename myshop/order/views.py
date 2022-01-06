@@ -16,7 +16,6 @@ class OrderItemEditView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         self.model.objects.filter(pk=request.POST['order_id']).update(
             status=request.POST['status'])
-
         return redirect(reverse('order:order_item', kwargs={'slug': request.POST['slug']}))
 
 
@@ -24,7 +23,6 @@ class SupplierOrderItemView(LoginRequiredMixin, ListView):
     """This view is for showing supplier's order items"""
     login_url = 'login'
     model = OrderItem
-    # filterset_class = OrderItemFilter
 
     def get(self, request, *args, **kwargs):
         self.supplier_slug = kwargs['slug']

@@ -9,7 +9,6 @@ urlpatterns = [
     path('supplier/<slug:slug>/order_item/',
          SupplierOrderItemView.as_view(), name='order_item'),
 
-
     path('supplier/<slug:slug>/order_item/<int:pk>',
          OrderItemDetailView.as_view(), name='order_item_detail'),
 

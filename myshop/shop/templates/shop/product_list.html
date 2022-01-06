@@ -14,7 +14,7 @@
             <!-- Card Header - Dropdown -->
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">{{ product.name }} (availability:{{ product.is_available}})</h6>
+                <a href="{% url 'shop:product_detail' product.supplier.slug product.slug %}"><h6 class="m-0 font-weight-bold text-primary">{{ product.name }} (availability:{{ product.is_available}})</h6></a>
                 <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -35,9 +35,6 @@
             </div>
         </div>
         {% endfor %}
-
-        {% comment %} {{supplier.created_date}} {% endcomment %}
-        {% comment %} {% url 'postdetail' supplier.pk %} {% endcomment %}
         <hr/>
         <br/>
         <br/>

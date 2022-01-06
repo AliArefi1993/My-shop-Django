@@ -16,7 +16,7 @@
             <!-- Card Header - Dropdown -->
             <div
                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">{{ supplier.supplier_name }} (status:{{ supplier.status}})</h6>
+                <a href="{% url 'shop:detail' supplier.slug %}"><h6 class="m-0 font-weight-bold text-primary">{{ supplier.supplier_name }} (status:{{ supplier.status}})</h6> </a>
                 <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -28,6 +28,7 @@
                         <a class="dropdown-item" href="{% url 'shop:detail' supplier.slug %}">Detail</a>
                         <a class="dropdown-item" href="{% url 'shop:supplier_edit' supplier.slug %}">Edit</a>
                         <a class="dropdown-item" href="{% url 'shop:supplier_products' supplier.slug %}">See Products</a>
+                        <a class="dropdown-item" href="{% url 'order:order_item' supplier.slug %}">See Orders</a>
                     </div>
                 </div>
             </div>

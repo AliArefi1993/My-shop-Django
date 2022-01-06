@@ -14,6 +14,7 @@ urlpatterns = [
 
     path('post-list', PostsListView.as_view(), name='post_list'),
     path('dashboard', DashboardView.as_view(), name='dashboard'),
+    path('', DashboardView.as_view(), name='dashboard'),
     path('search', SearchView.as_view(), name='search'),
     path('post-create', PostCreateView.as_view(), name='post_create'),
 
