@@ -1,11 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from order.models import OrderItem
 from django.core.exceptions import PermissionDenied
+from order.filters import OrderItemFilter
 
 
 class OrderItemEditView(LoginRequiredMixin, View):
@@ -23,6 +24,7 @@ class SupplierOrderItemView(LoginRequiredMixin, ListView):
     """This view is for showing supplier's order items"""
     login_url = 'login'
     model = OrderItem
+    # filterset_class = OrderItemFilter
 
     def get(self, request, *args, **kwargs):
         self.supplier_slug = kwargs['slug']
@@ -32,6 +34,13 @@ class SupplierOrderItemView(LoginRequiredMixin, ListView):
         self.queryset = self.model.objects.filter(
             product__supplier__slug=self.supplier_slug)
         return super().get_queryset(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        f = OrderItemFilter(self.request.GET, queryset=self.model.objects.filter(
+            product__supplier__slug=self.supplier_slug))
+        context['filter'] = f
+        return context
 
 
 class OrderItemDetailView(LoginRequiredMixin, DetailView):
