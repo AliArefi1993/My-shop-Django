@@ -101,8 +101,6 @@ class SupplierCreateView(LoginRequiredMixin, CreateView):
 
     def get(self, request, *args, **kwargs):
         if self.model.not_available.filter(custom_user=self.request.user):
-            print(self.model.not_available.filter(
-                custom_user=self.request.user))
             messages.add_message(
                 request, messages.WARNING, "You can't create new supplier, beacause you have at least one supplier with the pending status.")
             return HttpResponseRedirect('/shop/dashboard')
@@ -182,7 +180,6 @@ class SupplierProductView(LoginRequiredMixin, ListView):
     """This view is for showing supplier's product"""
     login_url = 'shop:login'
     model = Product
-    # template_name = 'shop/index.html'
 
     def get(self, request, *args, **kwargs):
         self.supplier_slug = kwargs['slug']
@@ -253,7 +250,6 @@ class SearchView(LoginRequiredMixin, ListView):
 
     def get_queryset(self, *args, **kwargs):
         search_query = self.request.GET.get('search_box', None)
-        print(search_query, "*************************____")
-        suppliers = Supplier.objects.filter(Q(supplier_name__icontains=search_query) | Q(
+        suppliers = Supplier.available.filter(Q(supplier_name__icontains=search_query) | Q(
             description__icontains=search_query)).filter(custom_user=self.request.user)
         return suppliers
