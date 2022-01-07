@@ -40,7 +40,8 @@ class Supplier(models.Model):
     address = models.CharField(max_length=200)
     post_code = models.CharField(max_length=10)
     custom_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+    created_date = models.DateTimeField(
+        auto_now_add=True, null=True, blank=True)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     type = models.ForeignKey('Type', on_delete=models.CASCADE)
