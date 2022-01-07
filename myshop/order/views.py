@@ -10,7 +10,7 @@ from order.filters import OrderItemFilter
 
 
 class OrderItemEditView(LoginRequiredMixin, View):
-    """This view is for delte a supplier"""
+    """This view is for edit order item status"""
     model = OrderItem
 
     def post(self, request, *args, **kwargs):
