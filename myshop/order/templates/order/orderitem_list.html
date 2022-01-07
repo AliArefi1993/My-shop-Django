@@ -53,7 +53,7 @@
                                         <option value="PAID" {% if order.status == 'PAID' %} selected="" {% endif %} disabled>Paid</option>
                                         <option value="" {% if  not order.status %} selected ="" {% endif %}disabled>---------</option>
                             <input  hidden value={{order.product.supplier.slug}} name = "slug">
-                            <input class="btn btn-success btn-icon-split" type="submit" value= 'Save' >
+                            <input class="btn btn-success btn-icon-split" type="submit" value= 'Save' {% if order.status == 'PAID' %}disabled{% endif %}>
                                     </td>
                                 <td>{{order.quantity}}</td>
                                 <td>{{order.price}}</td>
