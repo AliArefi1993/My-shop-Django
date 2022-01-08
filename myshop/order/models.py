@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
 from shop.models import Product
-from shop.models import Customer
+from customer.models import Customer
 
 
 class Order(models.Model):

@@ -45,8 +45,10 @@ INSTALLED_APPS = [
     'shop',
     'users',
     'order',
+    'customer',
 
     'django_filters',
+    'drf_yasg',
 
 ]
 
@@ -143,7 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-print(STATICFILES_DIRS, "----------------<")
 
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'static'

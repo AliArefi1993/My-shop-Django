@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
@@ -53,3 +53,10 @@ class OrderItemDetailView(LoginRequiredMixin, DetailView):
         if obj.product.supplier.custom_user != self.request.user:
             raise PermissionDenied
         return super(OrderItemDetailView, self).dispatch(request, *args, **kwargs)
+
+
+class ReoprtSupplierSiailsView(LoginRequiredMixin, ListView):
+    """This view is for showing to supplier's sails in a chart """
+    login_url = 'login'
+    model = OrderItem
+    template_name = 'order/supplier_sail_chart.html'

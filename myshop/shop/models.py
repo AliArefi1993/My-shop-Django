@@ -3,20 +3,6 @@ from users.models import CustomUser
 from django.template.defaultfilters import slugify
 
 
-class Customer(models.Model):
-    customer_username = models.CharField(max_length=200)
-    country = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    city = models.CharField(max_length=50)
-    address = models.CharField(max_length=200)
-    post_code = models.CharField(max_length=10)
-    custom_user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, primary_key=True, related_name='customer_user')
-
-    def __str__(self):
-        return self.customer_username
-
-
 class AvailableSupplierManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().exclude(status='DELE')
@@ -99,7 +85,8 @@ class Product(models.Model):
         'Tag', on_delete=models.DO_NOTHING, blank=True, null=True)
     image = models.ImageField(upload_to='images/')
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
-    created_date = models.DateTimeField(auto_now=True, null=True, blank=True)
+    created_date = models.DateTimeField(
+        auto_now_add=True, null=True, blank=True)
 
     def __str__(self):
         return self.name

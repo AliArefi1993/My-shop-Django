@@ -24,7 +24,7 @@ class Post(models.Model):
     pub_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=100, unique=True, null=True, blank=True)
     image = models.ImageField(upload_to='images/')
-    tag = models.ManyToManyField(Tag, blank=True, null=True)
+    tag = models.ManyToManyField(Tag, blank=True)
     like = models.IntegerField(default=0, null=True, blank=True)
 
     def random_number_generator(self):
@@ -55,7 +55,7 @@ class Comment(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=50)
-    post = models.ManyToManyField(Post, null=True, blank=True)
+    post = models.ManyToManyField(Post, blank=True)
 
     def __str__(self) -> str:
         return self.name
