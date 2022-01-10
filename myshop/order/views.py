@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls.base import reverse
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
@@ -55,8 +55,23 @@ class OrderItemDetailView(LoginRequiredMixin, DetailView):
         return super(OrderItemDetailView, self).dispatch(request, *args, **kwargs)
 
 
-class ReoprtSupplierSiailsView(LoginRequiredMixin, ListView):
+class ReoprtSupplierSiailsView(LoginRequiredMixin, View):
     """This view is for showing to supplier's sails in a chart """
     login_url = 'login'
     model = OrderItem
     template_name = 'order/supplier_sail_chart.html'
+
+    def get(self, request, *args, **kwargs):
+        labels = []
+        data = []
+
+        queryset = OrderItem.objects.order_by('-date')
+        for order in queryset:
+            labels.append(order.status)
+            print(order.price)
+            data.append(OrderItem.objects.order_by('-date')[0].price)
+
+        return render(request, 'order/supplier_sail_chart.html', {
+            'labels': labels,
+            'data': data,
+        })

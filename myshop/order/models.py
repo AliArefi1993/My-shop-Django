@@ -36,6 +36,7 @@ class OrderItem(models.Model):
     quantity = models.IntegerField(default=0)
     price = models.DecimalField(
         decimal_places=2, max_digits=11, blank=True, null=True)
+    date = models.DateTimeField(auto_now=True, blank=True, null=True)
     CANCELED = 'CANC'
     PENDING = 'PEND'
     APPROVED = 'APPR'
