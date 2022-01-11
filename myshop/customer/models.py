@@ -14,3 +14,11 @@ class Customer(models.Model):
 
     def __str__(self):
         return self.customer_username
+
+
+class ImageTest(models.Model):
+    name = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name

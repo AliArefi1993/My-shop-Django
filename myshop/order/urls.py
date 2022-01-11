@@ -15,4 +15,6 @@ urlpatterns = [
     path('supplier/<slug:slug>/sail_chart/',
          ReoprtSupplierSiailsView.as_view(), name='supplier_sail_chart'),
 
+
+
 ]
