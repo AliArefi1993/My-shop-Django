@@ -11,6 +11,7 @@ class Order(models.Model):
     total_price = models.DecimalField(
         decimal_places=2, max_digits=11, blank=True, null=True)
     tax = models.IntegerField(blank=True, null=True)
+    items = models.ManyToManyField('shop.Product', through='OrderItem')
 
     CANCELED = 'CANC'
     PENDING = 'PEND'
