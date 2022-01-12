@@ -1,9 +1,10 @@
+from django.db.models.query import QuerySet
 from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from shop.models import Supplier, Type
-from shop.serializers import SupplierListSerializer, TypeSerializer
+from shop.models import Supplier, Type, Product
+from shop.serializers import SupplierListSerializer, TypeSerializer, ProductListSerializer
 from rest_framework import permissions, status
-from shop.filter import SupplierListFilter
+from shop.filter import SupplierListFilter, SupplierProductListFilter
 from rest_framework import generics
 
 
@@ -32,3 +33,22 @@ class SupplierTypeListView(generics.ListAPIView):
         permissions.IsAuthenticated  # Or anon users can't register
     ]
     serializer_class = TypeSerializer
+
+
+class SupplierProductListView(generics.ListAPIView):
+    model = Product
+    filterset_class = SupplierProductListFilter
+    queryset = Product.objects.exclude(quantity=0)
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = ProductListSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.supplier_slug = kwargs['slug']
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+        self.queryset = self.model.objects.filter(
+            supplier__slug=self.supplier_slug).exclude(quantity=0)
+        return super().get_queryset(*args, **kwargs)

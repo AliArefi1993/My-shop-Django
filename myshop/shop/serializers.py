@@ -1,6 +1,6 @@
 from django.db.models import fields
 from rest_framework import serializers
-from shop.models import Supplier, Type
+from shop.models import Supplier, Type, Product
 from users.models import CustomUser  # If used custom user model
 # Non-field imports, but public API
 from django.contrib.auth.password_validation import validate_password
@@ -31,3 +31,12 @@ class SupplierDetailSerializer(serializers.ModelSerializer):
         fields = ['supplier_name', 'description', 'country', 'state',
                   'city', 'address', 'post_code', 'custom_user',
                   'created_date', 'image', 'type', 'status']
+
+
+class ProductListSerializer(serializers.ModelSerializer):
+    tag = TypeSerializer()
+
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'image',
+                  'quantity', 'unit_price', 'is_discontinued', 'is_available', 'tag']
