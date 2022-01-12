@@ -203,7 +203,7 @@ class TestCustomerProfileUpdateDetail(APITestCase):
 
     def setUp(self):
         self.user = mommy.make(User)
-        self.Customer = mommy.make(Customer, custom_user=self.user)
+        self.Customer = mommy.make(Customer, custom_user=self.user,)
 
     def test_put_customer_profile(self):
         url = reverse('customer_api:profile', args=[self.Customer.pk])
@@ -241,6 +241,7 @@ class TestCustomerProfileUpdateDetail(APITestCase):
 
         # check image in response image
         self.assertIsNotNone(resp_image)
+
         #   check the database saved data
         test_customer = Customer.objects.get(pk=self.Customer.pk)
 
@@ -318,3 +319,40 @@ class TestCustomerProfileUpdateDetail(APITestCase):
             "country": test_customer.country,
         }
         self.assertEqual(database_data['country'], resp.data['country'])
+
+    def test_get_customer_profile(self):
+        url = reverse('customer_api:profile', args=[self.Customer.pk])
+        self.client.force_authenticate(self.user)
+        image = SimpleUploadedFile(name='test_image.jpeg', content=open(
+            '/Users/...a/Documents/programming/maktab/project/maktab_final_project/myshop/customer/test_image.jpeg', 'rb').read(), content_type='image/jpeg')
+        new_data = {
+            # "customer_username": "ALI",
+            "country": "Iran",
+            # "state": "Kerman",
+            # "city": "Jiroft",
+            # "address": "Street 2",
+            # "post_code": "1234223434",
+            "image": image
+        }
+        resp = self.client.get(url, new_data)
+
+        #   check the response status
+        self.assertEqual(resp.status_code, 200)
+
+        # check database data
+        test_customer = Customer.objects.get(pk=self.Customer.pk)
+        database_data = {"customer_username": test_customer.customer_username,
+                         "country": test_customer.country,
+                         "state": test_customer.state,
+                         "city": test_customer.city,
+                         "address": test_customer.address,
+                         "post_code": test_customer.post_code,
+                         "custom_user": self.Customer.pk,
+                         "city": test_customer.city,
+
+                         }
+        resp_image = resp.data.pop('image')
+        self.assertEqual(database_data, resp.data)
+
+        # test image field should be none
+        self.assertIsNone(resp_image)
