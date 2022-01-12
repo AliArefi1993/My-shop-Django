@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from users.models import CustomUser  # If used custom user model
 from customer.models import Customer, ImageTest
 from customer.serializers import UserSerializer, ProfileSerializer, ImageTestSerializer
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import FileUploadParser, FormParser, MultiPartParser
 
 

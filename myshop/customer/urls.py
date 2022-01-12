@@ -18,8 +18,6 @@ urlpatterns = [
          CustomerProfileUpdateDetailٰView.as_view(), name='profile'),
 
 
-
-
     path('image_test/',
          UploadImageTestView.as_view(), name='image_test'),
 ]

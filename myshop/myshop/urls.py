@@ -42,9 +42,10 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')),  # grappelli URLS
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls')),
-    path('shop/', include('shop.urls')),
+    path('shop/', include('shop.urls.urls')),
     path('shop/', include('order.urls')),
     path('api/v1/customer/', include('customer.urls')),
+    path('api/v1/shop/', include('shop.urls.api_urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
             schema_view.without_ui(cache_timeout=0), name='schema-json'),
     re_path(r'^swagger/$', schema_view.with_ui('swagger',

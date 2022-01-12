@@ -37,9 +37,10 @@ class TestCreateUserView(APITestCase):
 
         #   check the response status
         self.assertEqual(resp.status_code, 201)
+        creeated_user = CustomUser.objects.get(phone=phone)
 
         #   check the response data
-        resp_data = {"id": 1,
+        resp_data = {"id": creeated_user.id,
                      "phone": phone,
                      "last_name": "aref",
                      "first_name": "ahmad",
@@ -47,7 +48,7 @@ class TestCreateUserView(APITestCase):
         self.assertEqual(resp.data, resp_data)
 
         #   check the hashed saved password
-        test_user = User.objects.get(id=1)
+        test_user = User.objects.get(id=creeated_user.id)
         self.assertTrue(check_password(password, test_user.password))
 
         #   check the database saved data except password
@@ -62,7 +63,7 @@ class TestCreateUserView(APITestCase):
         self.assertEqual(database_data, data)
 
     # test the appropriate error message
-    def test_create_user(self):
+    def test_create_user_error_message(self):
         url = reverse('customer_api:register')
         password = "ali1234789"
         wrong_password = "ali"
