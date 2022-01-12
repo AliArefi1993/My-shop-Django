@@ -47,3 +47,23 @@ class TestSupplierList(APITestCase):
 
         #   check the response lenght
         # self.assertEqual(len(resp.data), 2)
+
+
+class TestSupplierTypeList(APITestCase):
+
+    def setUp(self):
+        self.user = mommy.make(User)
+        self.type1 = mommy.make(Type, name='Digital')
+        self.type2 = mommy.make(Type, name='Stationery')
+
+    def test_supplier_list(self):
+        self.client.force_authenticate(self.user)
+        url = reverse('shop_api:supplier_types')
+
+        resp = self.client.get(url)
+
+        #   check the response status
+        self.assertEqual(resp.status_code, 200)
+
+        #   check the response lenght
+        self.assertEqual(len(resp.data), 2)

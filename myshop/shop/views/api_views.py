@@ -24,3 +24,11 @@ class SupplierListView(generics.ListAPIView):
         permissions.IsAuthenticated  # Or anon users can't register
     ]
     serializer_class = SupplierListSerializer
+
+
+class SupplierTypeListView(generics.ListAPIView):
+    queryset = Type.objects.all()
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = TypeSerializer
