@@ -1,5 +1,6 @@
 from django.contrib import admin
 from users.models import CustomUser
+from customer.models import ImageTest
 from django.utils.html import format_html
 
 
@@ -30,3 +31,8 @@ class CustomUserAdmin(admin.ModelAdmin):
 
             )
         return '-'
+
+
+@admin.register(ImageTest)
+class ImageTestAdmin(admin.ModelAdmin):
+    pass

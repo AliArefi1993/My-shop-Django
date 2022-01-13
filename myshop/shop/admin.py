@@ -1,5 +1,5 @@
 from django.contrib import admin
-from shop.models import Customer, Supplier, Tag, Type, Product
+from shop.models import Supplier, Tag, Type, Product
 from django.utils.html import format_html
 
 
@@ -33,15 +33,6 @@ class ProductAdmin(admin.ModelAdmin):
 
             )
         return '-'
-
-
-@admin.register(Customer)
-class CustomerAdmin(admin.ModelAdmin):
-
-    list_display = ('custom_user', 'customer_username',
-                    'country', 'state', 'city', 'address', 'post_code')
-    list_filter = ("country", 'state', 'city',)
-    search_fields = ('custom_user', 'customer_username',)
 
 
 @admin.action(description='Mark selected suppliers as confimed')
