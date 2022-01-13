@@ -1,21 +1,10 @@
 from rest_framework import serializers
 from users.models import CustomUser  # If used custom user model
-# Non-field imports, but public API
-from rest_framework.fields import ReadOnlyField, empty
 from django.contrib.auth.password_validation import validate_password
 from users.models import CustomUser
-from customer.models import Customer, ImageTest
-from rest_framework.serializers import Serializer, raise_errors_on_nested_writes
-from rest_framework.utils import model_meta
-import traceback
+from customer.models import Customer
 
 User = CustomUser
-
-
-class ImageTestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ImageTest
-        fields = ['name', 'image']
 
 
 class ProfileSerializer(serializers.ModelSerializer):

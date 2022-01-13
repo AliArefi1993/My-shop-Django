@@ -1,6 +1,7 @@
 from django.urls.base import reverse
 from model_mommy import mommy
 from rest_framework.test import APITestCase
+from shop.models import Supplier
 from order.models import OrderItem
 from shop.models import Product
 from users.models import CustomUser
@@ -83,7 +84,8 @@ class TestOrderAddItem(APITestCase):
         self.order1 = mommy.make(Order, status='PEND')
         self.order2 = mommy.make(Order, status='PAID')
         self.order3 = mommy.make(Order, status='CANC')
-        self.product1 = mommy.make(Product)
+        self.supplier = mommy.make(Supplier, status='CONF')
+        self.product1 = mommy.make(Product, supplier=self.supplier)
 
     def test_get_previous_order_list(self):
         url = reverse('order_api:order_add_item', args=[self.order1.pk])
@@ -111,7 +113,8 @@ class TestOrderSubtractItem(APITestCase):
         self.order1 = mommy.make(Order, status='PEND')
         self.order2 = mommy.make(Order, status='PAID')
         self.order3 = mommy.make(Order, status='CANC')
-        self.product1 = mommy.make(Product)
+        self.supplier = mommy.make(Supplier, status='CONF')
+        self.product1 = mommy.make(Product, supplier=self.supplier)
 
     def test_substract_item_from_order(self):
         url = reverse('order_api:order_add_item', args=[self.order1.pk])
@@ -154,7 +157,10 @@ class TestOrderCreate(APITestCase):
     def setUp(self):
         self.user = mommy.make(User)
         self.customer = mommy.make(Customer, custom_user=self.user)
-        self.product1 = mommy.make(Product)
+        self.supplier = mommy.make(Supplier, status='CONF')
+        self.product1 = mommy.make(Product, supplier=self.supplier)
+        self.supplier2 = mommy.make(Supplier, status='PEND')
+        self.product2 = mommy.make(Product, supplier=self.supplier2)
 
     def test_create_new_order(self):
         url = reverse('order_api:order_create')
@@ -173,3 +179,8 @@ class TestOrderCreate(APITestCase):
         # test order_item price
         self.assertEqual(OrderItem.objects.get(
             order__pk=order_id).price, self.product1.unit_price)
+
+        # check don't allow to buy from pend supplier
+        data = {"item_ids": [self.product2.pk]}
+        resp = self.client.post(url, data=data)
+        self.assertEqual(resp.status_code, 404)

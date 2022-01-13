@@ -1,4 +1,3 @@
-from rest_framework import status
 from shop.models import Type, Tag
 from shop.models import Supplier, Product
 from users.models import CustomUser

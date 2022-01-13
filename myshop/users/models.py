@@ -2,7 +2,6 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from users.managers import CustomUserManager
-from django.core.validators import RegexValidator
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):

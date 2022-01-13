@@ -1,5 +1,5 @@
 from django.urls import path
-from customer.views import CreateUserView, CreateCustomerProfileView, UploadImageTestView,\
+from customer.api_views import CreateUserView, CreateCustomerProfileView,\
     CustomerProfileUpdateDetailٰView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -17,7 +17,4 @@ urlpatterns = [
     path('profile/<int:pk>',
          CustomerProfileUpdateDetailٰView.as_view(), name='profile'),
 
-
-    path('image_test/',
-         UploadImageTestView.as_view(), name='image_test'),
 ]

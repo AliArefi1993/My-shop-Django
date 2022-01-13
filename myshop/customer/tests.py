@@ -83,34 +83,6 @@ class TestCreateUserView(APITestCase):
         self.assertEqual(resp.data, expected_message)
 
 
-#
-    # def test_post_detail(self):
-    #     url = reverse('post_detail', args=[16])
-    #     resp = self.client.get(url)
-    #     self.assertEqual(resp.status_code, 200)
-    #     self.assertEqual(resp.data['title'], 'test here')
-
-
-# class TestTokenObtainPairView(APITestCase):
-
-#     def setUp(self):
-#         self.user = mommy.make(User, phone='09301605684', password='1')
-
-#     def test_login(self):
-#         data = {
-#             "phone": self.user.phone,
-#             "password": self.user.password
-#         }
-#         print(self.user)
-#         self.client.force_authenticate(self.user)
-#         url = reverse('customer_api:token_obtain_pair')
-#         print(url)
-#         print(data)
-#         resp = self.client.post(url, data)
-#         print(resp)
-#         self.assertEqual(resp.status_code, 200)
-
-
 class TestCreateCustomerProfileView(APITestCase):
     "Test for creating new customer(create a profile)"
 

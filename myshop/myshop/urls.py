@@ -44,7 +44,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('shop/', include('shop.urls.urls')),
     path('shop/', include('order.urls.urls')),
-    path('api/v1/customer/', include('customer.urls')),
+    path('api/v1/customer/', include('customer.api_urls')),
     path('api/v1/shop/', include('shop.urls.api_urls')),
     path('api/v1/order/', include('order.urls.api_urls')),
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',

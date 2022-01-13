@@ -1,4 +1,3 @@
-from django.db.models import fields
 from rest_framework import serializers
 from shop.models import Supplier, Type, Product
 from users.models import CustomUser  # If used custom user model

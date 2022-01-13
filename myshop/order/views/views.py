@@ -68,7 +68,7 @@ class ReoprtSupplierSiailsView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        chart_data = OrderItem.objects.filter(product__supplier=context['supplier']).values('date__date').annotate(
+        chart_data = OrderItem.objects.filter(product__supplier=context['supplier'], product__supplier__status='CONF', status='PAID').values('date__date').annotate(
             total_price1=Sum('price')).order_by('date__date')
         context['chart_data'] = chart_data
         return context
@@ -86,7 +86,7 @@ class SupplierCustomerList(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['customer_order'] = OrderItem.objects.filter(product__supplier=context['supplier']
+        context['customer_order'] = OrderItem.objects.filter(product__supplier=context['supplier'], product__supplier__status='CONF', status='PAID'
                                                              ).values('order__customer', 'order__customer__customer_username', 'order__customer__custom_user__image').annotate(
             last_order=Max('date'),
             order_count=Count('id'),

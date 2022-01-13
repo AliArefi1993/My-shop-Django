@@ -1,6 +1,5 @@
-from rest_framework import serializers, status
-from rest_framework.exceptions import APIException, NotFound
-from rest_framework.fields import ReadOnlyField
+from rest_framework import serializers
+from rest_framework.exceptions import NotFound
 from rest_framework.utils import model_meta
 from customer.models import Customer
 from order.models import OrderItem
@@ -10,11 +9,6 @@ from users.models import CustomUser
 import traceback
 
 User = CustomUser
-
-# product_id = serializers.IntegerField()
-#     # extra_kwargs = {
-#     #     'product_id': {'read_only': True},
-#     # }
 
 
 class OrderCreateSerializer(serializers.ModelSerializer):
@@ -96,7 +90,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 )
             )
             raise TypeError(msg)
-
+        product = self.validated_data['items'][0]
+        if product.supplier.status != 'CONF':
+            raise NotFound
         # Save many-to-many relationships after the instance is created.
         if many_to_many:
             for field_name, value in many_to_many.items():
@@ -104,7 +100,7 @@ class OrderCreateSerializer(serializers.ModelSerializer):
                 field.set(value)
 
         order_id = instance.pk
-        product = self.validated_data['items'][0]
+
         current_order_item = OrderItem.objects.get(
             product=product, order=order_id)
 
@@ -152,6 +148,7 @@ class OrderPaySerializer(serializers.ModelSerializer):
         # have an instance pk for the relationships to be associated with.
         m2m_fields = []
         validated_data['status'] = 'PAID'
+        OrderItem.objects.filter(order=self.data['id']).update(status='PAID')
 
         for attr, value in validated_data.items():
             if attr in info.relations and info.relations[attr].to_many:
@@ -220,6 +217,8 @@ class OrderAddSerializer(serializers.ModelSerializer):
             field = getattr(instance, attr)
             field.add(value[0])
         product = self.validated_data['items'][0]
+        if product.supplier.status != 'CONF':
+            raise NotFound
         current_order_item = OrderItem.objects.get(
             product=product, order=order_id)
         # if current_order_item.quantity > 0:
@@ -282,6 +281,8 @@ class OrderSubstractSerializer(serializers.ModelSerializer):
         # updated instance and we do not want it to collide with .update()
         try:
             product = self.validated_data['items'][0]
+            if product.supplier.status != 'CONF':
+                raise NotFound
             current_order_item = OrderItem.objects.get(
                 product=product, order=order_id)
         except:

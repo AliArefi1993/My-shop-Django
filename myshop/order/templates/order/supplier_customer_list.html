@@ -22,13 +22,12 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>quantity</th>
-                                <th>supplier</th>
-                                <th>unit_price</th>
-                                <th>is_discontinued</th>
-                                <th>is_available</th>
-                                <th>slug</th>
-                                <th>tag</th>
+                                <th>user name</th>
+                                <th>last order</th>
+                                <th>order count</th>
+                                <th>purchase price</th>
+                                <th>purchase quantity</th>
+                                <th>Avator</th>
                             </tr>
                         </thead>
                         </tfoot>
@@ -45,7 +44,6 @@
                                 <img width="40" height="40"
                                                     src="/media/{{ order.order__customer__custom_user__image }}" alt="">
                                 </td>
-                                <td>dsd</td>
                             </tr>
                     {% endfor %}
                             

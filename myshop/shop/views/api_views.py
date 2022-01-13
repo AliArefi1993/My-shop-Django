@@ -6,16 +6,6 @@ from shop.filter import SupplierListFilter, SupplierProductListFilter
 from rest_framework import generics
 
 
-# class SupplierListView2(ListAPIView):
-#     model = Supplier
-#     permission_classes = [
-#         permissions.IsAuthenticated  # Or anon users can't register
-#     ]
-#     serializer_class = SupplierListSerializer
-#     queryset = Supplier.available.all()
-#     filterset_class = SupplierListFilter
-
-
 class SupplierListView(generics.ListAPIView):
     filterset_class = SupplierListFilter
     queryset = Supplier.available.filter(status='CONF')

@@ -1,18 +1,12 @@
 
-from drf_yasg.openapi import Response
 from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView
-from rest_framework import permissions, status
-from rest_framework.views import APIView
-from customer.models import Customer
-from shop.models import Type
+from rest_framework import permissions
 
-from shop.serializers import TypeSerializer
 from order.serializers import OrderListSerializer, OrderPaySerializer, OrderAddSerializer,\
     OrderSubstractSerializer, OrderCreateSerializer
 from order.models import Order
 from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.parsers import FileUploadParser, FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser
 
 
 response_schema_dict = {
