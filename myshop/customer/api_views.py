@@ -8,7 +8,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 
 
 class CreateUserView(CreateAPIView):
-
+    parser_classes = (MultiPartParser, FormParser)
     model = CustomUser
     permission_classes = [
         permissions.AllowAny  # Or anon users can't register
@@ -34,6 +34,7 @@ class CreateCustomerProfileView(CreateAPIView):
 
 
 class CustomerProfileUpdateDetailٰView(RetrieveUpdateAPIView):
+    parser_classes = (MultiPartParser, FormParser)
     lookup_field = 'pk'
     lookup_url_kwarg = 'pk'
     model = Customer

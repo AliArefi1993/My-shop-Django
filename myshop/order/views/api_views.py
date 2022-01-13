@@ -48,6 +48,7 @@ class OrderListPreviousView(ListAPIView):
 
 
 class OrderPayView(UpdateAPIView):
+    http_method_names = ['patch', ]
     parser_classes = (MultiPartParser, FormParser)
     queryset = Order.objects.filter(status="PEND")
     permission_classes = [
@@ -57,6 +58,7 @@ class OrderPayView(UpdateAPIView):
 
 
 class OrderAddItemView(UpdateAPIView):
+    http_method_names = ['patch', ]
     queryset = Order.objects.filter(status="PEND")
     permission_classes = [
         permissions.IsAuthenticated  # Or anon users can't register
@@ -65,6 +67,7 @@ class OrderAddItemView(UpdateAPIView):
 
 
 class OrderSubstractItemView(UpdateAPIView):
+    http_method_names = ['patch', ]
     queryset = Order.objects.filter(status="PEND")
     permission_classes = [
         permissions.IsAuthenticated  # Or anon users can't register
@@ -73,7 +76,6 @@ class OrderSubstractItemView(UpdateAPIView):
 
 
 class OrderCreateView(CreateAPIView):
-
     model = Order
     permission_classes = [
         permissions.IsAuthenticated  # Or anon users can't register
