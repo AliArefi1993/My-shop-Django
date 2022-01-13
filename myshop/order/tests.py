@@ -16,7 +16,7 @@ class TestOrderListPend(APITestCase):
         self.Customer = mommy.make(Order, status='PAID')
         self.Customer = mommy.make(Order, status='CANC')
 
-    def test_put_customer_profile(self):
+    def test_get_pend_order_list(self):
         url = reverse('order_api:order_pend_list')
         self.client.force_authenticate(self.user)
 
@@ -26,3 +26,24 @@ class TestOrderListPend(APITestCase):
 
         #   check the response lenght
         self.assertEqual(len(resp.data), 1)
+
+
+class TestOrderListPrevious(APITestCase):
+    "Test for getting detail and updating a customer"
+
+    def setUp(self):
+        self.user = mommy.make(User)
+        self.Customer = mommy.make(Order, status='PEND')
+        self.Customer = mommy.make(Order, status='PAID')
+        self.Customer = mommy.make(Order, status='CANC')
+
+    def test_get_previous_order_list(self):
+        url = reverse('order_api:order_previous_list')
+        self.client.force_authenticate(self.user)
+
+        resp = self.client.get(url)
+        #   check the response status
+        self.assertEqual(resp.status_code, 200)
+
+        #   check the response lenght
+        self.assertEqual(len(resp.data), 2)

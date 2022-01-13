@@ -43,6 +43,13 @@ class OrderListPendView(ListAPIView):
     serializer_class = OrderListSerializer
 
 
+class OrderListPreviousView(ListAPIView):
+    queryset = Order.objects.exclude(status="PEND")
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = OrderListSerializer
+
 # class OrderCreateView(APIView):
 
 #     model = Order
