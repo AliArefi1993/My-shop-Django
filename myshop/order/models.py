@@ -34,7 +34,7 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=CASCADE)
     product = models.ForeignKey(Product, on_delete=CASCADE)
-    quantity = models.IntegerField(default=0)
+    quantity = models.IntegerField(blank=True, null=True)
     price = models.DecimalField(
         decimal_places=2, max_digits=11, blank=True, null=True)
     date = models.DateTimeField(auto_now=True, blank=True, null=True)

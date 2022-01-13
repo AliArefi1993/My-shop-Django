@@ -7,10 +7,11 @@ from customer.models import Customer
 from shop.models import Type
 
 from shop.serializers import TypeSerializer
-from order.serializers import OrderListSerializer, OrderPaySerializer
+from order.serializers import OrderListSerializer, OrderPaySerializer, OrderAddSerializer
 from order.models import Order
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.parsers import FileUploadParser, FormParser, MultiPartParser
 
 
 response_schema_dict = {
@@ -52,11 +53,20 @@ class OrderListPreviousView(ListAPIView):
 
 
 class OrderPayView(UpdateAPIView):
+    parser_classes = (MultiPartParser, FormParser)
     queryset = Order.objects.filter(status="PEND")
     permission_classes = [
         permissions.IsAuthenticated  # Or anon users can't register
     ]
     serializer_class = OrderPaySerializer
+
+
+class OrderAddItemView(UpdateAPIView):
+    queryset = Order.objects.filter(status="PEND")
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = OrderAddSerializer
 
 
 # class OrderCreateView(APIView):

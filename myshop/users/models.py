@@ -15,7 +15,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('email address'), unique=True, blank=True, null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
-    national_code = models.CharField(max_length=10, unique=True)
+    national_code = models.CharField(max_length=10)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
