@@ -4,9 +4,11 @@ from django.urls.base import reverse
 from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from order.models import OrderItem
+from order.models import OrderItem, Order
+from shop.models import Supplier
 from django.core.exceptions import PermissionDenied
 from order.filters import OrderItemFilter
+from django.db.models.aggregates import Count, Max, Sum
 
 
 class OrderItemEditView(LoginRequiredMixin, View):
@@ -55,23 +57,40 @@ class OrderItemDetailView(LoginRequiredMixin, DetailView):
         return super(OrderItemDetailView, self).dispatch(request, *args, **kwargs)
 
 
-class ReoprtSupplierSiailsView(LoginRequiredMixin, View):
+class ReoprtSupplierSiailsView(LoginRequiredMixin, DetailView):
     """This view is for showing to supplier's sails in a chart """
     login_url = 'login'
-    model = OrderItem
+    model = Supplier
     template_name = 'order/supplier_sail_chart.html'
 
-    def get(self, request, *args, **kwargs):
-        labels = []
-        data = []
+    def get_queryset(self, *arg, **kwargs):
+        return Supplier.available.filter(slug=self.kwargs['slug'], custom_user=self.request.user)
 
-        queryset = OrderItem.objects.order_by('-date')
-        for order in queryset:
-            labels.append(order.status)
-            print(order.price)
-            data.append(OrderItem.objects.order_by('-date')[0].price)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        chart_data = OrderItem.objects.filter(product__supplier=context['supplier']).values('date__date').annotate(
+            total_price1=Sum('price')).order_by('date__date')
+        context['chart_data'] = chart_data
+        return context
 
-        return render(request, 'order/supplier_sail_chart.html', {
-            'labels': labels,
-            'data': data,
-        })
+
+class SupplierCustomerList(LoginRequiredMixin, DetailView):
+    """This view is for showing to supplier's customer list"""
+
+    template_name = 'order/supplier_customer_list.html'
+    login_url = 'login'
+    model = Supplier
+
+    def get_queryset(self, *arg, **kwargs):
+        return Supplier.available.filter(slug=self.kwargs['slug'], custom_user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['customer_order'] = OrderItem.objects.filter(product__supplier=context['supplier']
+                                                             ).values('order__customer', 'order__customer__customer_username', 'order__customer__custom_user__image').annotate(
+            last_order=Max('date'),
+            order_count=Count('id'),
+            purchase_price=Sum('price'),
+            purchase_quantity=Sum('quantity')
+        ).order_by()
+        return context

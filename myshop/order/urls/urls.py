@@ -1,5 +1,5 @@
 from django.urls import path
-from order.views.views import OrderItemEditView, SupplierOrderItemView, OrderItemDetailView, ReoprtSupplierSiailsView
+from order.views.views import OrderItemEditView, SupplierOrderItemView, OrderItemDetailView, ReoprtSupplierSiailsView, SupplierCustomerList
 app_name = 'order'
 urlpatterns = [
 
@@ -15,6 +15,7 @@ urlpatterns = [
     path('supplier/<slug:slug>/sail_chart/',
          ReoprtSupplierSiailsView.as_view(), name='supplier_sail_chart'),
 
-
+    path('supplier/<slug:slug>/customer_sails/',
+         SupplierCustomerList.as_view(), name='supplier_customer_sail'),
 
 ]

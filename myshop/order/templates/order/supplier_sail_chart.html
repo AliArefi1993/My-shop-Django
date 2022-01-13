@@ -1,35 +1,28 @@
 {% extends "shop/base.html" %}
 {% block content %}
 {% load static %}
-<title>{{ supplier.supplier_name }} Detail</title>
+<title>{{ supplier.supplier_name }} Sails Chart</title>
 
 <div class="container">
-{% for data1 in data   %}
 
-{{ data1}}
-{% endfor %}
-    <h1 class = "text-center pt-3">Supplier: {{ supplier.supplier_name }} (status:{{ supplier.status}})</h1>
+    <h1 class = "text-center pt-3">Supplier: {{ supplier.supplier_name }} Sails Chart</h1>
     <br/>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-2 text-gray-800"> More Detail</h1>
     <p class="mb-4"></p>
 
     <!-- Area Chart -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+            <h6 class="m-0 font-weight-bold text-primary">Sails Chart</h6>
         </div>
         <div class="card-body">
             <div class="chart-area">
                 <canvas id="myAreaChart"></canvas>
             </div>
             <hr>
-            Styling for the area chart can be found in the
-            <code>/js/demo/chart-area-demo.js</code> file.
         </div>
     </div>
-
     <!-- Bar Chart -->
     
 </div>
@@ -70,13 +63,13 @@ function number_format(number, decimals, dec_point, thousands_sep) {
 // Area Chart Example
 var ctx = document.getElementById("myAreaChart");
 var myLineChart = new Chart(ctx, {
-  type: 'line',
+  type: 'bar',
   data: {
-    labels: ["Jan"],
+    labels: [{% for label in chart_data %}'{{label.date__date}}',{% endfor %}],
     datasets: [{
       label: "Earnings",
       lineTension: 0.3,
-      backgroundColor: "rgba(78, 115, 223, 0.05)",
+      backgroundColor: "rgba(153, 102, 255, 0.2)",
       borderColor: "rgba(78, 115, 223, 1)",
       pointRadius: 3,
       pointBackgroundColor: "rgba(78, 115, 223, 1)",
@@ -86,7 +79,7 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [2,3],
+      data: [{% for data in chart_data %}{{data.total_price1}},{% endfor %}] ,
     }],
   },
   options: {
