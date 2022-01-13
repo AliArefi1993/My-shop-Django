@@ -1,5 +1,5 @@
 from django.urls import path
-from order.views import OrderItemEditView, SupplierOrderItemView, OrderItemDetailView, ReoprtSupplierSiailsView
+from order.views.views import OrderItemEditView, SupplierOrderItemView, OrderItemDetailView, ReoprtSupplierSiailsView
 app_name = 'order'
 urlpatterns = [
 

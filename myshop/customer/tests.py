@@ -4,7 +4,6 @@ from users.models import CustomUser
 from rest_framework.test import APITestCase
 from model_mommy import mommy
 from django.urls import reverse
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 
 
@@ -15,10 +14,6 @@ class TestCreateUserView(APITestCase):
 
     def setUp(self):
         pass
-        # user = mommy.make(User)
-        # mommy.make(Post, owner=user, _quantity=10)
-        # mommy.make(Post, _quantity=5)
-        # mommy.make(Post, title='test here', _quantity=1)
 
     def test_create_user(self):
         url = reverse('customer_api:register')

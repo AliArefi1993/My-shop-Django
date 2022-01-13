@@ -1,9 +1,7 @@
-from django.db.models.query import QuerySet
-from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
+
 from shop.models import Supplier, Type, Product
 from shop.serializers import SupplierListSerializer, TypeSerializer, ProductListSerializer
-from rest_framework import permissions, status
+from rest_framework import permissions
 from shop.filter import SupplierListFilter, SupplierProductListFilter
 from rest_framework import generics
 
