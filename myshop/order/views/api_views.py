@@ -7,7 +7,8 @@ from customer.models import Customer
 from shop.models import Type
 
 from shop.serializers import TypeSerializer
-from order.serializers import OrderListSerializer, OrderPaySerializer, OrderAddSerializer
+from order.serializers import OrderListSerializer, OrderPaySerializer, OrderAddSerializer,\
+    OrderSubstractSerializer, OrderCreateSerializer
 from order.models import Order
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -69,47 +70,18 @@ class OrderAddItemView(UpdateAPIView):
     serializer_class = OrderAddSerializer
 
 
-# class OrderCreateView(APIView):
+class OrderSubstractItemView(UpdateAPIView):
+    queryset = Order.objects.filter(status="PEND")
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = OrderSubstractSerializer
 
-#     model = Order
-#     permission_classes = [
-#         permissions.IsAuthenticated  # Or anon users can't register
-#     ]
-#     serializer_class = OrderCreateSerializer
 
-#     # @swagger_auto_schema(responses=response_schema_dict)
-#     def get(self, request, *args, **kwargs):
-#         return Response({"foo": "bar"})
-#         # return Response({}, status=status.HTTP_201_CREATED, headers=[])
-#
-    # def create(self, request, *args, **kwargs):
-    #     return Response({'ali': 'qw'})
+class OrderCreateView(CreateAPIView):
 
-    # serializer = self.get_serializer(data=request.data)
-    # serializer.is_valid(raise_exception=True)
-    # customer = Customer.objects.get(custom_user=request.user)
-
-    # serializer.validated_data['customer'] = customer
-    # serializer.validated_data['order_number'] = '1000'
-    # self.perform_create(serializer)
-    # headers = self.get_success_headers(serializer.data)
-    # return Response({}, status=status.HTTP_201_CREATED, headers=[])
-
-    # def create(self, request, *args, **kwargs):
-    #     serializer = self.get_serializer(data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     customer = Customer.objects.get(custom_user=request.user)
-    #     print(customer)
-    #     serializer.validated_data['customer'] = customer
-    #     serializer.validated_data['order_number'] = '1000'
-    #     print('10*************************')
-    #     self.perform_create(serializer)
-    #     print('10*************************')
-
-    #     headers = self.get_success_headers(serializer.data)
-    #     print('10*************************')
-    #     print(serializer.data)
-    #     print(status.HTTP_201_CREATED)
-    #     print(headers)
-    #     print(serializer.is_valid())
-    #     return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    model = Order
+    permission_classes = [
+        permissions.IsAuthenticated  # Or anon users can't register
+    ]
+    serializer_class = OrderCreateSerializer

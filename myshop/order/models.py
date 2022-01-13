@@ -9,7 +9,7 @@ class Order(models.Model):
     order_number = models.CharField(max_length=20)
     order_date = models.DateTimeField(auto_now=True)
     total_price = models.DecimalField(
-        decimal_places=2, max_digits=11, blank=True, null=True)
+        decimal_places=2, max_digits=11, default=0)
     tax = models.IntegerField(blank=True, null=True)
     items = models.ManyToManyField('shop.Product', through='OrderItem')
 
@@ -34,9 +34,9 @@ class Order(models.Model):
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=CASCADE)
     product = models.ForeignKey(Product, on_delete=CASCADE)
-    quantity = models.IntegerField(blank=True, null=True)
+    quantity = models.IntegerField(default=0)
     price = models.DecimalField(
-        decimal_places=2, max_digits=11, blank=True, null=True)
+        decimal_places=2, max_digits=11, default=0)
     date = models.DateTimeField(auto_now=True, blank=True, null=True)
     CANCELED = 'CANC'
     PENDING = 'PEND'

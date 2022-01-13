@@ -5,6 +5,8 @@ from order.models import OrderItem
 from shop.models import Product
 from users.models import CustomUser
 from order.models import Order
+from customer.models import Customer
+
 
 User = CustomUser
 
@@ -87,7 +89,7 @@ class TestOrderAddItem(APITestCase):
         url = reverse('order_api:order_add_item', args=[self.order1.pk])
 
         self.client.force_authenticate(self.user)
-        data = {"item_ids": [1]}
+        data = {"item_ids": [self.product1.pk]}
         resp = self.client.patch(url, data=data)
         #   check the response status
         self.assertEqual(resp.status_code, 200)
@@ -99,3 +101,75 @@ class TestOrderAddItem(APITestCase):
         resp = self.client.patch(url, data=data)
         self.assertEqual(OrderItem.objects.get(
             order__pk=self.order1.pk).quantity, 2)
+
+
+class TestOrderSubtractItem(APITestCase):
+    "Test for subtracting an item to an order"
+
+    def setUp(self):
+        self.user = mommy.make(User)
+        self.order1 = mommy.make(Order, status='PEND')
+        self.order2 = mommy.make(Order, status='PAID')
+        self.order3 = mommy.make(Order, status='CANC')
+        self.product1 = mommy.make(Product)
+
+    def test_substract_item_from_order(self):
+        url = reverse('order_api:order_add_item', args=[self.order1.pk])
+        self.client.force_authenticate(self.user)
+        data = {"item_ids": [self.product1.pk]}
+        # add two number of a product
+        resp = self.client.patch(url, data=data)
+        resp = self.client.patch(url, data=data)
+        self.assertEqual(OrderItem.objects.get(
+            order__pk=self.order1.pk).quantity, 2)
+        # reduce a product from order
+        url = reverse('order_api:order_subtract_item', args=[self.order1.pk])
+        resp = self.client.patch(url, data=data)
+
+        #   check the response status
+        self.assertEqual(resp.status_code, 200)
+
+        # test Order_item quantity one substraction
+        self.assertEqual(OrderItem.objects.get(
+            order__pk=self.order1.pk).quantity, 1)
+
+        # test order_item price
+        total_order_item_price = OrderItem.objects.get(
+            order__pk=self.order1.pk).price
+        self.assertEqual(total_order_item_price, self.product1.unit_price)
+
+        # test order total price
+        total_price = Order.objects.get(pk=self.order1.pk).total_price
+        self.assertEqual(total_price, self.product1.unit_price)
+
+        # test cancelig order after eleminating all items
+        resp = self.client.patch(url, data=data)
+        status = Order.objects.get(pk=self.order1.pk).status
+        self.assertEqual(status, 'CANC')
+
+
+class TestOrderCreate(APITestCase):
+    "Test for creating an order "
+
+    def setUp(self):
+        self.user = mommy.make(User)
+        self.customer = mommy.make(Customer, custom_user=self.user)
+        self.product1 = mommy.make(Product)
+
+    def test_create_new_order(self):
+        url = reverse('order_api:order_create')
+        self.client.force_authenticate(self.user)
+        data = {"item_ids": [self.product1.pk]}
+        resp = self.client.post(url, data=data)
+        order_id = resp.data['id']
+
+        #   check the response status
+        self.assertEqual(resp.status_code, 201)
+
+        # test Order_item quantity after creation
+        self.assertIsNotNone(OrderItem.objects.get(
+            order__pk=order_id).quantity, 1)
+
+        # test order_item price
+        self.assertEqual(OrderItem.objects.get(
+            order__pk=order_id).price, self.product1.unit_price)
