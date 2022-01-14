@@ -93,8 +93,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             )
             raise TypeError(msg)
         product = self.validated_data['items'][0]
-        if product.supplier.status != 'CONF':
-            raise NotFound
+        if product.supplier.status != 'CONF' or product.quantity == 0:
+            raise NotFound(**{'detail': 'product not available.'})
+
         # Save many-to-many relationships after the instance is created.
         if many_to_many:
             for field_name, value in many_to_many.items():
@@ -109,6 +110,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         current_order_item.price = product.unit_price
         current_order_item.quantity = 1
         current_order_item.save()
+        product.quantity = product.quantity - 1
+        product.save()
         instance.total_price += product.unit_price
         instance.save()
         return instance
@@ -200,6 +203,9 @@ class OrderAddSerializer(serializers.ModelSerializer):
         # Note that unlike `.create()` we don't need to treat many-to-many
         # relationships as being a special case. During updates we already
         # have an instance pk for the relationships to be associated with.
+        product = self.validated_data['items'][0]
+        if product.supplier.status != 'CONF' or product.quantity == 0:
+            raise NotFound(**{'detail': 'product not available.'})
         m2m_fields = []
 
         for attr, value in validated_data.items():
@@ -218,7 +224,7 @@ class OrderAddSerializer(serializers.ModelSerializer):
         for attr, value in m2m_fields:
             field = getattr(instance, attr)
             field.add(value[0])
-        product = self.validated_data['items'][0]
+        # product = self.validated_data['items'][0]
         if product.supplier.status != 'CONF':
             raise NotFound
         current_order_item = OrderItem.objects.get(
@@ -230,6 +236,9 @@ class OrderAddSerializer(serializers.ModelSerializer):
         #     current_order_item.quantity = 1
 
         instance.total_price += product.unit_price
+        current_order_item.save()
+        product.quantity = product.quantity - 1
+        product.save()
         instance.save()
         current_order_item.save()
 
@@ -303,6 +312,8 @@ class OrderSubstractSerializer(serializers.ModelSerializer):
                 current_order_item.status = 'CANC'
                 if instance.total_price == 0:
                     instance.status = 'CANC'
+            product.quantity = product.quantity + 1
+            product.save()
             current_order_item.save()
             instance.save()
         else:

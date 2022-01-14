@@ -85,9 +85,9 @@ class TestOrderAddItem(APITestCase):
         self.order2 = mommy.make(Order, status='PAID')
         self.order3 = mommy.make(Order, status='CANC')
         self.supplier = mommy.make(Supplier, status='CONF')
-        self.product1 = mommy.make(Product, supplier=self.supplier)
+        self.product1 = mommy.make(Product, supplier=self.supplier, quantity=5)
 
-    def test_get_previous_order_list(self):
+    def test_get_add_order_to_order(self):
         url = reverse('order_api:order_add_item', args=[self.order1.pk])
 
         self.client.force_authenticate(self.user)
@@ -103,6 +103,8 @@ class TestOrderAddItem(APITestCase):
         resp = self.client.patch(url, data=data)
         self.assertEqual(OrderItem.objects.get(
             order__pk=self.order1.pk).quantity, 2)
+        self.assertEqual(Product.objects.get(
+            pk=self.product1.pk).quantity, 3)
 
 
 class TestOrderSubtractItem(APITestCase):
@@ -114,7 +116,7 @@ class TestOrderSubtractItem(APITestCase):
         self.order2 = mommy.make(Order, status='PAID')
         self.order3 = mommy.make(Order, status='CANC')
         self.supplier = mommy.make(Supplier, status='CONF')
-        self.product1 = mommy.make(Product, supplier=self.supplier)
+        self.product1 = mommy.make(Product, supplier=self.supplier, quantity=5)
 
     def test_substract_item_from_order(self):
         url = reverse('order_api:order_add_item', args=[self.order1.pk])
@@ -125,6 +127,7 @@ class TestOrderSubtractItem(APITestCase):
         resp = self.client.patch(url, data=data)
         self.assertEqual(OrderItem.objects.get(
             order__pk=self.order1.pk).quantity, 2)
+
         # reduce a product from order
         url = reverse('order_api:order_subtract_item', args=[self.order1.pk])
         resp = self.client.patch(url, data=data)
@@ -135,6 +138,8 @@ class TestOrderSubtractItem(APITestCase):
         # test Order_item quantity one substraction
         self.assertEqual(OrderItem.objects.get(
             order__pk=self.order1.pk).quantity, 1)
+        self.assertEqual(Product.objects.get(
+            pk=self.product1.pk).quantity, 4)
 
         # test order_item price
         total_order_item_price = OrderItem.objects.get(
@@ -158,7 +163,7 @@ class TestOrderCreate(APITestCase):
         self.user = mommy.make(User)
         self.customer = mommy.make(Customer, custom_user=self.user)
         self.supplier = mommy.make(Supplier, status='CONF')
-        self.product1 = mommy.make(Product, supplier=self.supplier)
+        self.product1 = mommy.make(Product, supplier=self.supplier, quantity=5)
         self.supplier2 = mommy.make(Supplier, status='PEND')
         self.product2 = mommy.make(Product, supplier=self.supplier2)
 
