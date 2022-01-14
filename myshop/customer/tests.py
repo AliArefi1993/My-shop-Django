@@ -18,7 +18,7 @@ class TestCreateUserView(APITestCase):
     def test_create_user(self):
         url = reverse('customer_api:register')
         password = "ali1234789"
-        phone = "09301605685"
+        phone = "09131480549"
         data = {
             "phone": phone,
             "password": password,
@@ -29,6 +29,9 @@ class TestCreateUserView(APITestCase):
             "email": "asdjsad@sad.com"
         }
         resp = self.client.post(url, data=data)
+        print()
+        print(resp.data)
+        print()
 
         #   check the response status
         self.assertEqual(resp.status_code, 201)

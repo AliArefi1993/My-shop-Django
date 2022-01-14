@@ -9,11 +9,11 @@ from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, request
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
 

@@ -65,9 +65,11 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         for field_name, relation_info in info.relations.items():
             if relation_info.to_many and (field_name in validated_data):
                 many_to_many[field_name] = validated_data.pop(field_name)
-
-        validated_data['customer'] = Customer.objects.get(
-            custom_user=self.context['request'].user)
+        try:
+            validated_data['customer'] = Customer.objects.get(
+                custom_user=self.context['request'].user)
+        except:
+            raise NotFound(**{'detail': 'customer profile not found.'})
 
         try:
             instance = ModelClass._default_manager.create(**validated_data)
