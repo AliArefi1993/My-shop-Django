@@ -26,9 +26,8 @@ class CreateCustomerProfileView(CreateAPIView):
 
 
 class CustomerProfileUpdateDetailٰView(RetrieveUpdateAPIView):
+    http_method_names = ['put', 'get']
     parser_classes = (MultiPartParser, FormParser)
-    lookup_field = 'pk'
-    lookup_url_kwarg = 'pk'
     model = Customer
     queryset = Customer.objects.all()
     serializer_class = ProfileSerializer

@@ -249,48 +249,6 @@ class TestCustomerProfileUpdateDetail(APITestCase):
         expected_message = {"country": ["This field is required."]}
         self.assertEqual(resp.data, expected_message)
 
-    def test_patch_customer_profile(self):
-        url = reverse('customer_api:profile', args=[self.Customer.pk])
-        self.client.force_authenticate(self.user)
-        image = SimpleUploadedFile(name='test_image.jpeg', content=open(
-            '/Users/...a/Documents/programming/maktab/project/maktab_final_project/myshop/customer/test_image.jpeg', 'rb').read(), content_type='image/jpeg')
-        new_data = {
-            # "customer_username": "ALI",
-            "country": "Iran",
-            # "state": "Kerman",
-            # "city": "Jiroft",
-            # "address": "Street 2",
-            # "post_code": "1234223434",
-            "image": image
-        }
-        resp = self.client.patch(url, new_data)
-        #   check the response status
-        self.assertEqual(resp.status_code, 200)
-
-        #   check the  updated field in response data
-        desired_resp_data = {
-            "customer_username": "ALI",
-            "country": "Iran",
-            "state": "Kerman",
-            "city": "Jiroft",
-            "address": "Street 2",
-            "post_code": "1234223434",
-            "custom_user": self.Customer.pk,
-            # "image": image
-
-        }
-        self.assertEqual(resp.data['country'], desired_resp_data['country'])
-
-        # check image in response image
-        self.assertIsNotNone(resp.data['country'])
-        #   check the database saved data
-        test_customer = Customer.objects.get(pk=self.Customer.pk)
-
-        database_data = {
-            "country": test_customer.country,
-        }
-        self.assertEqual(database_data['country'], resp.data['country'])
-
     def test_get_customer_profile(self):
         url = reverse('customer_api:profile', args=[self.Customer.pk])
         self.client.force_authenticate(self.user)
