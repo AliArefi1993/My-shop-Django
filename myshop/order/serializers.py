@@ -224,22 +224,19 @@ class OrderAddSerializer(serializers.ModelSerializer):
         for attr, value in m2m_fields:
             field = getattr(instance, attr)
             field.add(value[0])
-        # product = self.validated_data['items'][0]
         if product.supplier.status != 'CONF':
             raise NotFound
         current_order_item = OrderItem.objects.get(
             product=product, order=order_id)
-        # if current_order_item.quantity > 0:
         current_order_item.quantity += 1
         current_order_item.price += product.unit_price
-        # else:
-        #     current_order_item.quantity = 1
 
         instance.total_price += product.unit_price
+        instance.save()
         current_order_item.save()
         product.quantity = product.quantity - 1
         product.save()
-        instance.save()
+        self.is_valid()
         current_order_item.save()
 
         return instance
