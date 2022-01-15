@@ -68,6 +68,7 @@ var myLineChart = new Chart(ctx, {
     labels: [{% for label in chart_data %}'{{label.date__date}}',{% endfor %}],
     datasets: [{
       label: "Earnings",
+      data: [{% for data in chart_data %}{{data.total_price1}},{% endfor %}],
       lineTension: 0.3,
       backgroundColor: "rgba(153, 102, 255, 0.2)",
       borderColor: "rgba(78, 115, 223, 1)",
@@ -79,7 +80,6 @@ var myLineChart = new Chart(ctx, {
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
       pointHitRadius: 10,
       pointBorderWidth: 2,
-      data: [{% for data in chart_data %}{{data.total_price1}},{% endfor %}] ,
     }],
   },
   options: {
@@ -107,6 +107,7 @@ var myLineChart = new Chart(ctx, {
       }],
       yAxes: [{
         ticks: {
+          beginAtZero: true,
           maxTicksLimit: 5,
           padding: 10,
           // Include a dollar sign in the ticks

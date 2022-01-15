@@ -177,7 +177,7 @@ class TestCustomerProfileUpdateDetail(APITestCase):
         self.Customer = mommy.make(Customer, custom_user=self.user,)
 
     def test_put_customer_profile(self):
-        url = reverse('customer_api:profile', args=[self.Customer.pk])
+        url = reverse('customer_api:profile')
         self.client.force_authenticate(self.user)
         image = SimpleUploadedFile(name='test_image.jpeg', content=open(
             '/Users/...a/Documents/programming/maktab/project/maktab_final_project/myshop/customer/test_image.jpeg', 'rb').read(), content_type='image/jpeg')
@@ -227,7 +227,7 @@ class TestCustomerProfileUpdateDetail(APITestCase):
         self.assertEqual(database_data, resp_data_without_image)
 
     # test the appropriate error message
-        url = reverse('customer_api:profile', args=[self.Customer.pk])
+        url = reverse('customer_api:profile')
         image = SimpleUploadedFile(name='test_image.jpeg', content=open(
             '/Users/...a/Documents/programming/maktab/project/maktab_final_project/myshop/customer/test_image.jpeg', 'rb').read(), content_type='image/jpeg')
         data = {
@@ -250,7 +250,7 @@ class TestCustomerProfileUpdateDetail(APITestCase):
         self.assertEqual(resp.data, expected_message)
 
     def test_get_customer_profile(self):
-        url = reverse('customer_api:profile', args=[self.Customer.pk])
+        url = reverse('customer_api:profile')
         self.client.force_authenticate(self.user)
         image = SimpleUploadedFile(name='test_image.jpeg', content=open(
             '/Users/...a/Documents/programming/maktab/project/maktab_final_project/myshop/customer/test_image.jpeg', 'rb').read(), content_type='image/jpeg')

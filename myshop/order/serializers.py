@@ -153,7 +153,8 @@ class OrderPaySerializer(serializers.ModelSerializer):
         # have an instance pk for the relationships to be associated with.
         m2m_fields = []
         validated_data['status'] = 'PAID'
-        OrderItem.objects.filter(order=self.data['id']).update(status='PAID')
+        OrderItem.objects.filter(order=self.data['id']).exclude(
+            quantity=0).update(status='PAID')
 
         for attr, value in validated_data.items():
             if attr in info.relations and info.relations[attr].to_many:
@@ -206,6 +207,7 @@ class OrderAddSerializer(serializers.ModelSerializer):
         product = self.validated_data['items'][0]
         if product.supplier.status != 'CONF' or product.quantity == 0:
             raise NotFound(**{'detail': 'product not available.'})
+
         m2m_fields = []
 
         for attr, value in validated_data.items():
