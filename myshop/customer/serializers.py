@@ -11,15 +11,6 @@ User = CustomUser
 
 class ProfileSerializer(serializers.ModelSerializer):
 
-    # # Create a custom method field
-    # current_user = serializers.SerializerMethodField('_user')
-
-    # # Use this method for the custom field
-    # def _user(self, obj):
-    #     request = self.context.get('request', None)
-    #     if request:
-    #         return request.user
-
     image = serializers.ImageField(source='custom_user.image')
 
     class Meta:

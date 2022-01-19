@@ -6,13 +6,14 @@ from django.utils.html import format_html
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('show_image', "last_name", "first_name", "phone")
+    list_display = ('show_image', "last_name", "first_name",
+                    "phone", 'phone_is_submitted')
     list_filter = ("date_joined", )
     search_fields = ('last_name', 'first_name', 'phone')
     fieldsets = (
         (None, {
             'fields': ("last_name", "first_name", "phone",
-                       'password', 'email', 'national_code', 'image')
+                       'password', 'email', 'national_code', 'image', 'phone_is_submitted', 'counter')
         }),
         ('Advanced options', {
             'classes': ('grp-collapse grp-closed',),

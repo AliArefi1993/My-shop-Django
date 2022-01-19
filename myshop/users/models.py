@@ -16,6 +16,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=50)
     national_code = models.CharField(max_length=10)
     image = models.ImageField(upload_to='images/', blank=True, null=True)
+    counter = models.IntegerField(default=0)
+    phone_is_submitted = models.BooleanField(default=False)
     USERNAME_FIELD = 'phone'
     REQUIRED_FIELDS = []
     objects = CustomUserManager()
