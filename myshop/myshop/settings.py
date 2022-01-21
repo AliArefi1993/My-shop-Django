@@ -182,3 +182,13 @@ SWAGGER_SETTINGS = {
     }
 }
 AUTHENTICATION_BACKENDS = ['trainee.backends.PhoneNumberBackend']
+
+OTP_SETTINGS = {
+    'SECRET_KEY': env('VERIFY_OTP_SECRET_KEY'),
+    'VERIFY_TOTP': {
+        'INTERVAL': '150',
+    },
+    'LOGIN_TOTP': {
+        'INTERVAL': '240'
+    }
+}
