@@ -3,9 +3,6 @@ from pyotp import TOTP
 from typing import Any, Union, Optional
 import hashlib
 
-if settings.DEBUG:
-    print(444)
-
 
 class VerifyTOTP(TOTP):
     """

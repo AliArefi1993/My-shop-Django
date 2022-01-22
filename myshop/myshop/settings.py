@@ -186,9 +186,9 @@ AUTHENTICATION_BACKENDS = ['trainee.backends.PhoneNumberBackend']
 OTP_SETTINGS = {
     'SECRET_KEY': env('VERIFY_OTP_SECRET_KEY'),
     'VERIFY_TOTP': {
-        'INTERVAL': '150',
+        'INTERVAL': '30',
     },
     'LOGIN_TOTP': {
-        'INTERVAL': '240'
+        'INTERVAL': '35'
     }
 }
