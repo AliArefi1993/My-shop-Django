@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
-    'django_celery_results',
+    # 'django_celery_results',
 
 ]
 

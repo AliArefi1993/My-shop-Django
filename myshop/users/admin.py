@@ -13,7 +13,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {
             'fields': ("last_name", "first_name", "phone",
-                       'password', 'email', 'national_code', 'image', 'phone_is_submitted', 'counter')
+                       'password', 'email', 'national_code', 'image', 'phone_is_submitted')
         }),
         ('Advanced options', {
             'classes': ('grp-collapse grp-closed',),
