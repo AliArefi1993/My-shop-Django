@@ -1,18 +1,13 @@
-from django.shortcuts import render
 from django.core.exceptions import ObjectDoesNotExist
-import pyotp
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from users.models import CustomUser
 from utils.generate_key import generateKey
 from utils.otp_auth import VerifyTOTP, LoginTOTP
-from users.schemas import VerifyPhoneNumbeSchemas
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework.schemas import AutoSchema
-import coreapi
 from users.serializers import OTPSerializer
 from rest_framework.parsers import FormParser, MultiPartParser
+from users.tasks import send_sms
 
 
 class VerifyPhoneNumberView(APIView):
@@ -27,7 +22,9 @@ class VerifyPhoneNumberView(APIView):
         except ObjectDoesNotExist:
             return Response({"message": "Your number hase't been registered yet."}, status=404)
         OTP = VerifyTOTP(generateKey.get_key(phone, 'verify'))
-        return Response({"OTP": OTP.now()}, status=200)
+        otp = OTP.now()
+        send_sms.delay(phone, otp)
+        return Response({"OTP": otp}, status=200)
 
     # This Method verifies the OTP
     @swagger_auto_schema(operation_description="description", request_body=OTPSerializer)
@@ -56,4 +53,6 @@ class OTPLoginView(APIView):
         except ObjectDoesNotExist:
             return Response({"message": "Your haven't registered with this phone number yet."}, status=404)
         OTP = LoginTOTP(generateKey.get_key(phone, 'login'))
-        return Response({"OTP": OTP.now()}, status=200)
+        otp = OTP.now()
+        send_sms.delay(phone, otp)
+        return Response({"OTP": otp}, status=200)

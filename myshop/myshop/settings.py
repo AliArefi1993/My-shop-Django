@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
+    'django_celery_results',
 
 ]
 
@@ -192,3 +193,16 @@ OTP_SETTINGS = {
         'INTERVAL': '35'
     }
 }
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+
+
+CELERY_BROKER_URL = 'amqp://localhost'
+
+OTP_USER_API_KEY = env('OTP_USER_API_KEY')
+OTP_SECRET_KEY = env('OTP_SECRET_KEY')

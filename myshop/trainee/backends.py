@@ -1,7 +1,5 @@
-import base64
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth import get_user_model
-import pyotp
 from utils.generate_key import generateKey
 from utils.otp_auth import LoginTOTP
 UserModel = get_user_model()
