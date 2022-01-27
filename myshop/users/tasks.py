@@ -9,7 +9,7 @@ from django.conf import settings
 
 @shared_task
 def send_sms(phone, otp):
-    sms_token = cache.get('sms_token')
+    sms_token = cache.get('sms_token6')
     if not sms_token:
         url = "https://RestfulSms.com/api/Token"
         payload = json.dumps({

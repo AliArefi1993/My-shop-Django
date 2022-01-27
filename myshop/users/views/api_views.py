@@ -26,7 +26,6 @@ class VerifyPhoneNumberView(APIView):
         send_sms.delay(phone, otp)
         return Response({"OTP": otp}, status=200)
 
-    # This Method verifies the OTP
     @swagger_auto_schema(operation_description="description", request_body=OTPSerializer)
     def post(self, request, phone):
         try:
@@ -38,13 +37,11 @@ class VerifyPhoneNumberView(APIView):
             Mobile.phone_is_submitted = True
             Mobile.save()
             return Response("You are authorised", status=200)
-        return Response("OTP is wrong", status=401)
+        return Response("OTP is wrong", status=400)
 
 
 class OTPLoginView(APIView):
-    # Get to Create a call for OTP
-    @staticmethod
-    def get(request, phone):
+    def get(self, request, phone):
         try:
             Mobile = CustomUser.objects.get(
                 phone=phone)

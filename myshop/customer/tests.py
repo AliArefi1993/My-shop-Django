@@ -46,6 +46,14 @@ class TestCreateUserView(APITestCase):
         test_user = User.objects.get(id=creeated_user.id)
         self.assertTrue(check_password(password, test_user.password))
 
+        # test user login
+        url = reverse('customer_api:token_obtain_pair')
+        login_data = {
+            "phone": phone,
+            "password": password}
+        login_resp = self.client.post(url, data=login_data)
+        self.assertEqual(login_resp.status_code, 200)
+
         #   check the database saved data except password
         database_data = {"phone": test_user.phone,
                          "last_name": test_user.last_name,

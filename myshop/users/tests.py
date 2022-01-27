@@ -19,6 +19,7 @@ class TestVerifyOTPPhone(APITestCase):
     def test_get_verify_otp_code(self):
         url = reverse('users_api:verify_phone', args=[self.user1.phone])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 200)
 
@@ -28,12 +29,14 @@ class TestVerifyOTPPhone(APITestCase):
         # check the response to a user who already has been verified
         url = reverse('users_api:verify_phone', args=[self.user2.phone])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 400)
 
         # check the response to a phone who has'nt been registered yet
         url = reverse('users_api:verify_phone', args=['+989301605689'])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 404)
 
@@ -43,13 +46,14 @@ class TestVerifyOTPPhone(APITestCase):
         otp = resp.data['OTP']
         url = reverse('users_api:verify_phone', args=[self.user1.phone])
         resp = self.client.post(url, {'otp': otp})
+
         #   check the response status
         self.assertEqual(resp.status_code, 200)
 
         #   check the response to another user with otp
         url = reverse('users_api:verify_phone', args=[self.user2.phone])
         resp = self.client.post(url, {'otp': otp})
-        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 400)
 
         #   check the response after lost of code validity
         url = reverse('users_api:verify_phone', args=[self.user3.phone])
@@ -58,8 +62,9 @@ class TestVerifyOTPPhone(APITestCase):
         url = reverse('users_api:verify_phone', args=[self.user3.phone])
         sleep(int(settings.OTP_SETTINGS['VERIFY_TOTP']['INTERVAL']))
         resp = self.client.post(url, {'otp': otp})
+
         #   check the response status
-        self.assertEqual(resp.status_code, 401)
+        self.assertEqual(resp.status_code, 400)
 
 
 class TestLoginOTPPhone(APITestCase):
@@ -73,6 +78,7 @@ class TestLoginOTPPhone(APITestCase):
     def test_get_verify_otp_code(self):
         url = reverse('users_api:login_otp', args=[self.user2.phone])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 200)
 
@@ -82,12 +88,14 @@ class TestLoginOTPPhone(APITestCase):
         # check the response to a user who already has not been verified
         url = reverse('users_api:login_otp', args=[self.user1.phone])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 401)
 
         # check the response to a phone who has'nt been registered yet
         url = reverse('users_api:login_otp', args=['+989301605689'])
         resp = self.client.get(url)
+
         #   check the response status
         self.assertEqual(resp.status_code, 404)
 
@@ -98,6 +106,7 @@ class TestLoginOTPPhone(APITestCase):
         url = reverse('customer_api:token_obtain_pair')
         login_data = {'password': otp, 'phone': self.user2.phone}
         resp = self.client.post(url, login_data)
+
         #   check the response status
         self.assertEqual(resp.status_code, 200)
 
@@ -115,5 +124,6 @@ class TestLoginOTPPhone(APITestCase):
         login_data = {'password': otp, 'phone': self.user2.phone}
         sleep(int(settings.OTP_SETTINGS['LOGIN_TOTP']['INTERVAL']))
         resp = self.client.post(url, login_data)
+
         #   check the response status
         self.assertEqual(resp.status_code, 401)
