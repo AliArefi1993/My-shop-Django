@@ -1,7 +1,7 @@
 from django.urls import path
 from shop.views.views import Login, DashboardView, SupplierDetailView, SupplierEditView,\
     SupplierCreateView, DeleteSupplier, SupplierView, SupplierProductView, ProductDetailView,\
-    ProductCreateView, ProductEditView, SignUpView, ProfileView, LogoutView, SearchView
+    ProductCreateView, ProductEditView, SignUpView, ProfileView, LogoutView, SearchView, PhoneSubmitView, OTPView
 app_name = 'shop'
 urlpatterns = [
     path('', DashboardView.as_view(), name='dashboard'),
@@ -28,5 +28,7 @@ urlpatterns = [
     path('supplier/<slug:slug>/product_create/',
          ProductCreateView.as_view(), name='product_create'),
     path('search', SearchView.as_view(), name='search'),
+    path('submit/<int:pk>/', PhoneSubmitView.as_view(), name='submit_phone'),
+    path('otp/<int:pk>/', OTPView.as_view(), name='send_otp'),
 
 ]

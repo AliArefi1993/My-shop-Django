@@ -203,6 +203,6 @@ CACHES = {
 
 
 CELERY_BROKER_URL = 'amqp://localhost'
-
+# CELERY_BROKER_URL = 'redis://localhost:6379'
 OTP_USER_API_KEY = env('OTP_USER_API_KEY')
 OTP_SECRET_KEY = env('OTP_SECRET_KEY')
