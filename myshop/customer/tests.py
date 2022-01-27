@@ -29,9 +29,6 @@ class TestCreateUserView(APITestCase):
             "email": "asdjsad@sad.com"
         }
         resp = self.client.post(url, data=data)
-        print()
-        print(resp.data)
-        print()
 
         #   check the response status
         self.assertEqual(resp.status_code, 201)
@@ -140,11 +137,9 @@ class TestCreateCustomerProfileView(APITestCase):
         self.assertEqual(database_data, data)
 
         # Test custom_user id
-        print(resp.data)
         self.assertEqual(1, resp.data['custom_user'])
 
     # test the appropriate error message
-
     def test_create_customer(self):
         url = reverse('customer_api:create_profile')
         image = SimpleUploadedFile(name='test_image.jpeg', content=open(
