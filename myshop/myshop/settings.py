@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'drf_yasg',
+    # 'django_celery_results',
 
 ]
 
@@ -181,3 +182,27 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+AUTHENTICATION_BACKENDS = ['trainee.backends.PhoneNumberBackend']
+
+OTP_SETTINGS = {
+    'SECRET_KEY': env('VERIFY_OTP_SECRET_KEY'),
+    'VERIFY_TOTP': {
+        'INTERVAL': '30',
+    },
+    'LOGIN_TOTP': {
+        'INTERVAL': '35'
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+    }
+}
+
+
+CELERY_BROKER_URL = 'amqp://localhost'
+# CELERY_BROKER_URL = 'redis://localhost:6379'
+OTP_USER_API_KEY = env('OTP_USER_API_KEY')
+OTP_SECRET_KEY = env('OTP_SECRET_KEY')

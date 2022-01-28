@@ -60,3 +60,15 @@ class ProfileForm(forms.ModelForm):
             # 'email',
             'image'
         ]
+
+
+class OtpForm(forms.ModelForm):
+    OTP = forms.CharField(
+        max_length=6, min_length=6, help_text='Please Enter your code')
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'OTP',
+
+        ]

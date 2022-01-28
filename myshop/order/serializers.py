@@ -27,7 +27,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'order_number': {'read_only': True},
             'order_date': {'read_only': True},
             'total_price': {'read_only': True},
-            # 'items': {'read_only': True},
             'status': {'read_only': True},
         }
 
@@ -65,9 +64,11 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         for field_name, relation_info in info.relations.items():
             if relation_info.to_many and (field_name in validated_data):
                 many_to_many[field_name] = validated_data.pop(field_name)
-
-        validated_data['customer'] = Customer.objects.get(
-            custom_user=self.context['request'].user)
+        try:
+            validated_data['customer'] = Customer.objects.get(
+                custom_user=self.context['request'].user)
+        except:
+            raise NotFound(**{'detail': 'customer profile not found.'})
 
         try:
             instance = ModelClass._default_manager.create(**validated_data)
@@ -91,8 +92,9 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             )
             raise TypeError(msg)
         product = self.validated_data['items'][0]
-        if product.supplier.status != 'CONF':
-            raise NotFound
+        if product.supplier.status != 'CONF' or product.quantity == 0:
+            raise NotFound(**{'detail': 'product not available.'})
+
         # Save many-to-many relationships after the instance is created.
         if many_to_many:
             for field_name, value in many_to_many.items():
@@ -107,6 +109,8 @@ class OrderCreateSerializer(serializers.ModelSerializer):
         current_order_item.price = product.unit_price
         current_order_item.quantity = 1
         current_order_item.save()
+        product.quantity = product.quantity - 1
+        product.save()
         instance.total_price += product.unit_price
         instance.save()
         return instance
@@ -148,7 +152,8 @@ class OrderPaySerializer(serializers.ModelSerializer):
         # have an instance pk for the relationships to be associated with.
         m2m_fields = []
         validated_data['status'] = 'PAID'
-        OrderItem.objects.filter(order=self.data['id']).update(status='PAID')
+        OrderItem.objects.filter(order=self.data['id']).exclude(
+            quantity=0).update(status='PAID')
 
         for attr, value in validated_data.items():
             if attr in info.relations and info.relations[attr].to_many:
@@ -198,6 +203,10 @@ class OrderAddSerializer(serializers.ModelSerializer):
         # Note that unlike `.create()` we don't need to treat many-to-many
         # relationships as being a special case. During updates we already
         # have an instance pk for the relationships to be associated with.
+        product = self.validated_data['items'][0]
+        if product.supplier.status != 'CONF' or product.quantity == 0:
+            raise NotFound(**{'detail': 'product not available.'})
+
         m2m_fields = []
 
         for attr, value in validated_data.items():
@@ -216,19 +225,19 @@ class OrderAddSerializer(serializers.ModelSerializer):
         for attr, value in m2m_fields:
             field = getattr(instance, attr)
             field.add(value[0])
-        product = self.validated_data['items'][0]
         if product.supplier.status != 'CONF':
             raise NotFound
         current_order_item = OrderItem.objects.get(
             product=product, order=order_id)
-        # if current_order_item.quantity > 0:
         current_order_item.quantity += 1
         current_order_item.price += product.unit_price
-        # else:
-        #     current_order_item.quantity = 1
 
         instance.total_price += product.unit_price
         instance.save()
+        current_order_item.save()
+        product.quantity = product.quantity - 1
+        product.save()
+        self.is_valid()
         current_order_item.save()
 
         return instance
@@ -251,7 +260,6 @@ class OrderSubstractSerializer(serializers.ModelSerializer):
             'order_number': {'read_only': True},
             'order_date': {'read_only': True},
             'total_price': {'read_only': True},
-            # 'items': {'read_only': True},
             'status': {'read_only': True},
         }
 
@@ -301,6 +309,8 @@ class OrderSubstractSerializer(serializers.ModelSerializer):
                 current_order_item.status = 'CANC'
                 if instance.total_price == 0:
                     instance.status = 'CANC'
+            product.quantity = product.quantity + 1
+            product.save()
             current_order_item.save()
             instance.save()
         else:

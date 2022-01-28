@@ -2,20 +2,23 @@ from django.db.models.query_utils import Q
 from django.shortcuts import render
 from django.urls.base import reverse
 from users.models import CustomUser
-from shop.forms import LoginForm, SupplierForm, ProductForm, SignUpForm, ProfileForm
+from shop.forms import LoginForm, SupplierForm, ProductForm, SignUpForm, ProfileForm, OtpForm
 from shop.models import Supplier, Product
 from order.models import OrderItem
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, request
+from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.views.generic.edit import CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.core.exceptions import PermissionDenied
+from utils.otp_auth import VerifyTOTP
+from users.tasks import send_sms
+from utils.generate_key import generateKey
 
 
 class SignUpView(CreateView):
@@ -253,3 +256,61 @@ class SearchView(LoginRequiredMixin, ListView):
         suppliers = Supplier.available.filter(Q(supplier_name__icontains=search_query) | Q(
             description__icontains=search_query)).filter(custom_user=self.request.user)
         return suppliers
+
+
+class OTPView(View):
+    """This view is for sending otp"""
+
+    def get(self, request, *args, **kwargs):
+        phone = self.request.user.phone
+        if self.request.user.phone_is_submitted == False:
+            OTP = VerifyTOTP(generateKey.get_key(phone, 'verify'))
+            otp = OTP.now()
+            send_sms.delay(phone, otp)
+            messages.add_message(
+                request, messages.SUCCESS, 'OTP has been sent successfully.')
+        else:
+            messages.add_message(
+                request, messages.WARNING, 'Your phone has already been submitted!')
+
+        return redirect('shop:submit_phone', self.request.user.pk)
+
+
+class PhoneSubmitView(LoginRequiredMixin, UpdateView):
+    """ This class view is for submitting phone number """
+    login_url = 'login'
+    model = CustomUser
+    form_class = OtpForm
+    template_name = 'shop/submit_phone.html'
+    success_url = reverse_lazy('shop:dashboard')
+
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only authors can update stories """
+        obj = self.get_object()
+        if obj != self.request.user:
+            raise PermissionDenied
+        return super(PhoneSubmitView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+
+        obj = form.save(commit=False)
+        phone = obj.phone
+        print(self.request.POST['OTP'])
+        OTP = VerifyTOTP(generateKey.get_key(phone, 'verify'))
+
+        if OTP.verify(self.request.POST['OTP']):
+            obj.phone_is_submitted = True
+
+            """If the form is valid, save the associated model."""
+            self.object = form.save()
+
+            """If the form is valid, redirect to the supplied URL."""
+            messages.add_message(
+                self.request, messages.SUCCESS, 'Your phone authorised successfuly.')
+            return HttpResponseRedirect(self.get_success_url())
+
+        messages.add_message(
+            self.request, messages.WARNING, 'Your code is wrong!')
+        return redirect('shop:submit_phone', self.request.user.pk)
+
+        # return super(PhoneSubmitView, self).form_valid(form)

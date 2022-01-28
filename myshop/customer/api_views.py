@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from users.models import CustomUser  # If used custom user model
 from customer.models import Customer
 from customer.serializers import UserSerializer, ProfileSerializer
-from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView, get_object_or_404
 from rest_framework.parsers import FormParser, MultiPartParser
 
 
@@ -24,22 +24,16 @@ class CreateCustomerProfileView(CreateAPIView):
     ]
     serializer_class = ProfileSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.validated_data['custom_user'] = request.user
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
 
 class CustomerProfileUpdateDetailٰView(RetrieveUpdateAPIView):
+    http_method_names = ['put', 'get']
     parser_classes = (MultiPartParser, FormParser)
-    lookup_field = 'pk'
-    lookup_url_kwarg = 'pk'
     model = Customer
     queryset = Customer.objects.all()
     serializer_class = ProfileSerializer
     permission_classes = [
         permissions.IsAuthenticated  # Or anon users can't register
     ]
+
+    def get_object(self):
+        return get_object_or_404(Customer, custom_user_id=self.request.user.id)

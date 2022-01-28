@@ -12,8 +12,6 @@ urlpatterns = [
          SupplierTypeListView.as_view(), name='supplier_types'),
     path('supplier/<slug:slug>/product/',
          SupplierProductListView.as_view(), name='supplier_products'),
-    # path('profile/<int:pk>',
-    #      CustomerProfileUpdateDetailٰView.as_view(), name='profile'),
 
 
 ]

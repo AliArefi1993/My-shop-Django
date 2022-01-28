@@ -14,7 +14,7 @@ urlpatterns = [
          CreateUserView.as_view(), name='register'),
     path('profile/',
          CreateCustomerProfileView.as_view(), name='create_profile'),
-    path('profile/<int:pk>',
+    path('profile_customer/',
          CustomerProfileUpdateDetailٰView.as_view(), name='profile'),
 
 ]

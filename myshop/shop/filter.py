@@ -8,7 +8,7 @@ class SupplierListFilter(django_filters.FilterSet):
 
     class Meta:
         model = Supplier
-        fields = ['type']
+        fields = ['type__name']
 
 
 class SupplierProductListFilter(django_filters.FilterSet):
@@ -21,4 +21,5 @@ class SupplierProductListFilter(django_filters.FilterSet):
 
     class Meta:
         model = Product
-        fields = ['tag', 'unit_price', 'is_available']
+        fields = ['tag__name', 'unit_price__gt',
+                  'unit_price__lt', 'is_available']
