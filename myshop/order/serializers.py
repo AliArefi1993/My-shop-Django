@@ -27,7 +27,6 @@ class OrderCreateSerializer(serializers.ModelSerializer):
             'order_number': {'read_only': True},
             'order_date': {'read_only': True},
             'total_price': {'read_only': True},
-            # 'items': {'read_only': True},
             'status': {'read_only': True},
         }
 
@@ -261,7 +260,6 @@ class OrderSubstractSerializer(serializers.ModelSerializer):
             'order_number': {'read_only': True},
             'order_date': {'read_only': True},
             'total_price': {'read_only': True},
-            # 'items': {'read_only': True},
             'status': {'read_only': True},
         }
 

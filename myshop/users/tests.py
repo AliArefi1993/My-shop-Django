@@ -33,7 +33,7 @@ class TestVerifyOTPPhone(APITestCase):
         #   check the response status
         self.assertEqual(resp.status_code, 400)
 
-        # check the response to a phone who has'nt been registered yet
+        # check the response to a phone who has not been registered yet
         url = reverse('users_api:verify_phone', args=['+989301605689'])
         resp = self.client.get(url)
 
@@ -92,7 +92,7 @@ class TestLoginOTPPhone(APITestCase):
         #   check the response status
         self.assertEqual(resp.status_code, 401)
 
-        # check the response to a phone who has'nt been registered yet
+        # check the response to a phone who has not been registered yet
         url = reverse('users_api:login_otp', args=['+989301605689'])
         resp = self.client.get(url)
 
